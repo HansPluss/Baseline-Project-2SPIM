@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="3Dexam.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Draw.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Resources\ImportedCode\Construct.cpp" />
     <ClCompile Include="Resources\Shaders\EBO.cpp" />
@@ -144,11 +145,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="Draw.h" />
     <ClInclude Include="includes\assimp\Bitmap.h" />
     <ClInclude Include="includes\GLFW\glfw3.h" />
     <ClInclude Include="includes\GLFW\glfw3native.h" />
     <ClInclude Include="includes\glm\mat4x3.hpp" />
     <ClInclude Include="includes\KHR\khrplatform.h" />
+    <ClInclude Include="Movement.h" />
     <ClInclude Include="Resources\ImportedCode\Construct.h" />
     <ClInclude Include="Resources\Shaders\EBO.h" />
     <ClInclude Include="Resources\Shaders\shaderClass.h" />
