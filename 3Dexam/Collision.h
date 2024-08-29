@@ -1,18 +1,13 @@
 #pragma once
-class MyClass
+class Collision
 {
 public:
-	MyClass();
-	~MyClass();
+	Collision();
+	~Collision();
 
+	bool SphereCollison();
+	bool AABBCollision();
 private:
 
 };
 
-MyClass::MyClass()
-{
-}
-
-MyClass::~MyClass()
-{
-}
