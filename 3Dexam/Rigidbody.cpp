@@ -1,6 +1,6 @@
 #include "Rigidbody.h"
 
-Rigidbody::Rigidbody() : Mass(1.0f), Position(0.0f,0.0f,0.0f), Velocity(0.0f,0.0f,0.0f), Acceleration(1.0f,1.0f,1.0f)
+Rigidbody::Rigidbody() : Mass(1.0f), Position(0.0f,0.0f,0.0f), Velocity(0.0f,0.0f,0.0f), Acceleration(0.0f,0.0f,0.0f), AngularVelocity(0.0f,0.0f,0.0f), AngularAcceleration(0.0f,0.0f,0.0f)
 {
 
 }
@@ -23,6 +23,16 @@ glm::vec3 Rigidbody::GetVelocity()
 glm::vec3 Rigidbody::GetAcceleration()
 {
 	return Acceleration;
+}
+
+glm::vec3 Rigidbody::GetAngularVelocity()
+{
+	return AngularVelocity;
+}
+
+glm::vec3 Rigidbody::GetAngularAcceleration()
+{
+	return AngularAcceleration;
 }
 
 float Rigidbody::GetMass()
@@ -64,6 +74,11 @@ void Rigidbody::ApplyForce(glm::vec3 force)
 {
 	// F = M*A
 	Acceleration += force / Mass;
+}
+
+void Rigidbody::ApplyTorque()
+{
+	//AngularVelocity = Friction * ??;
 }
 
 void Rigidbody::Update(float deltaTime)

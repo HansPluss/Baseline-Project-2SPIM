@@ -9,6 +9,8 @@ public:
 	glm::vec3 GetPosition();
 	glm::vec3 GetVelocity();
 	glm::vec3 GetAcceleration();
+	glm::vec3 GetAngularVelocity();
+	glm::vec3 GetAngularAcceleration();
 	float GetMass();
 	float GetFriction();
 
@@ -18,6 +20,7 @@ public:
 	void SetMass(float mass);
 	void SetFriction(float friction);
 	void ApplyForce(glm::vec3 force);
+	void ApplyTorque();
 	void Update(float deltaTime);
 	void ElasticCollision(Rigidbody rb1, Rigidbody rb2, const glm::vec3& collisionNormal);
 private:
