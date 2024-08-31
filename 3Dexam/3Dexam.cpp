@@ -7,6 +7,7 @@
 #include <stb/stb_image.h>
 #include "Resources/Shaders/shaderClass.h"
 #include "Texture.h"
+#include "Draw.h"
 #include "Camera.h"
 
 // Some of the code for the spotlight is from the following repo
@@ -67,9 +68,9 @@ int main()
 
 
     
-
-   
-   
+    Draw Cube; 
+    Cube.DrawCube(glm::vec3(23, 100, 145), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+    Cube.Initalize();
 
    
     
@@ -109,7 +110,9 @@ int main()
         //Set render distance and FOV
         glm::mat4 viewproj = camera.Matrix(45.0f, 0.1f, 1000.0f, shaderProgram, "camMatrix");
 
-        glBindTexture(GL_TEXTURE_2D, texture.texture);
+        Cube.Render(shaderProgram, viewproj); 
+
+
 
     
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

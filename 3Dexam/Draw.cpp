@@ -1,9 +1,20 @@
 #include "Draw.h"
+#include "glm/glm.hpp"
+#include "Resources/Shaders/shaderClass.h"
+#include "glm/gtc/type_ptr.hpp"
 
-std::vector<Vertex> Draw::DrawCube(glm::vec3 Color, std::vector<unsigned int>& indices)
+Draw::Draw()
 {
-    std::vector<Vertex> CubeArray;
-    CubeArray.resize(36);
+}
+
+std::vector<Vertex> Draw::DrawCube(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
+{
+    
+    position = pos; 
+    objSize = size; 
+
+    std::vector<Vertex> vertices;
+    vertices.resize(8);
     glm::vec3 sizeXYZ = glm::vec3(1.f, 1.f, 1.f);
 
     // Front face vertices
@@ -21,7 +32,7 @@ std::vector<Vertex> Draw::DrawCube(glm::vec3 Color, std::vector<unsigned int>& i
    
 
     // Assign vertices to CubeArray
-    CubeArray = {
+    vertices = {
         v0, // Front bottom left
         v1, // Front bottom right
         v2, // Front top right
@@ -32,33 +43,34 @@ std::vector<Vertex> Draw::DrawCube(glm::vec3 Color, std::vector<unsigned int>& i
         v7  // Back top left
     };
     indices = {
-        // Front face
-        0, 1, 2, 2, 3, 0,
-        // Back face
-        4, 5, 6, 6, 7, 4,
-        // Left face
-        8, 9, 10, 10, 11, 8,
-        // Right face
-        12, 13, 14, 14, 15, 12,
-        // Top face
-        16, 17, 18, 18, 19, 16,
-        // Bottom face
-        20, 21, 22, 22, 23, 20
+    // Front face
+    0, 1, 2,   0, 2, 3,
+    // Back face
+    4, 6, 5,   4, 7, 6,
+    // Left face
+    0, 3, 7,   0, 7, 4,
+    // Right face
+    1, 6, 5,   1, 2, 6,
+    // Top face
+    3, 2, 6,   3, 6, 7,
+    // Bottom face
+    0, 5, 4,   0, 1, 5
     };
 
-    return CubeArray;
+    return vertices;
     
 }
 
-std::vector<Vertex> Draw::DrawSphere(glm::vec3 Color, std::vector<unsigned int>& indices)
+std::vector<Vertex> Draw::DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
 {
-    std::vector<Vertex> vertices;
+    position = pos;
+    objSize = size;
     
     
     return std::vector<Vertex>();
 }
 
-void Draw::Render(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+void Draw::Initalize()
 {
     //bind the VAO And VBO
     VAO.Bind();
@@ -74,11 +86,38 @@ void Draw::Render(std::vector<Vertex>& vertices, std::vector<unsigned int>& indi
     VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     VAO.LinkAttrib(VBO, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
-    //draw the vertices
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    //unbind
+    VAO.Unbind();
+    VBO.Unbind();
+    EBO.Unbind();
+}
+
+void Draw::Render(Shader Shader, glm::mat4 viewproj)
+{
+
+
+    glm::mat4 model2 = glm::mat4(1.0f);
+    model2 = glm::translate(model2, position);
+    model2 = glm::scale(model2, objSize);
+    glUniformMatrix4fv(glGetUniformLocation(Shader.ID, "camMatrix"), 1, GL_FALSE, glm::value_ptr(viewproj * model2));
+    VAO.Bind();
+    VBO.Bind();
+    EBO.Bind();
+   
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
+
+
 
     //unbind
     VAO.Unbind();
     VBO.Unbind();
-    EBO.Bind();
+    EBO.Unbind();
+
+}
+
+void Draw::Delete()
+{
+    VAO.Delete();
+    VBO.Delete();
+    EBO.Delete();
 }
