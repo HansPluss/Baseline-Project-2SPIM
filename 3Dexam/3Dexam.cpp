@@ -70,7 +70,7 @@ int main()
     
     Draw Cube; 
     Cube.DrawCube(glm::vec3(23, 100, 145), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
-    Cube.Initalize();
+   // Cube.Initalize();
 
    
     

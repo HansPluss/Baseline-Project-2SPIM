@@ -24,19 +24,22 @@ struct Vertex
 class Draw {
 public:
 	Draw();
-	std::vector<Vertex> DrawCube(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)  ;
+
+	void DrawCube(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)  ;
 	std::vector<Vertex> DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
-	void Initalize(); 
 	void Render(Shader shader, glm::mat4 viewproj);
 
 	void Delete();
 
 private:
+	void Initalize();
+
+
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 	glm::vec3 position = glm::vec3(0,0,0); 
 	glm::vec3 objSize = glm::vec3(1,1,1);
 	VAO VAO;
 	VBO VBO;
-	EBO EBO;
+	EBO EBO1;
 };
