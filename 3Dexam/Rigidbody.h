@@ -22,7 +22,7 @@ public:
 	void ApplyForce(glm::vec3 force);
 	void ApplyTorque();
 	void Update(float deltaTime);
-	void ElasticCollision(Rigidbody rb1, Rigidbody rb2, const glm::vec3& collisionNormal);
+	void ElasticCollision(Rigidbody rb2, const glm::vec3& collisionNormal);
 private:
 	glm::vec3 Position;
 	glm::vec3 Velocity;

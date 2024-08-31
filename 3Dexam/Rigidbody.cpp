@@ -1,6 +1,9 @@
 #include "Rigidbody.h"
 
-Rigidbody::Rigidbody() : Mass(1.0f), Position(0.0f,0.0f,0.0f), Velocity(0.0f,0.0f,0.0f), Acceleration(0.0f,0.0f,0.0f), AngularVelocity(0.0f,0.0f,0.0f), AngularAcceleration(0.0f,0.0f,0.0f)
+Rigidbody::Rigidbody() : 
+	Mass(1.0f), Position(0.0f,0.0f,0.0f), Velocity(0.0f,0.0f,0.0f), 
+	Acceleration(0.0f,0.0f,0.0f), AngularVelocity(0.0f,0.0f,0.0f), 
+	AngularAcceleration(0.0f,0.0f,0.0f), Friction(0.0f)
 {
 
 }
@@ -87,15 +90,15 @@ void Rigidbody::Update(float deltaTime)
 	Position += Velocity * deltaTime;
 }
 
-void Rigidbody::ElasticCollision(Rigidbody rb1, Rigidbody rb2, const glm::vec3& collisionNormal)
+void Rigidbody::ElasticCollision(Rigidbody rb2, const glm::vec3& collisionNormal)
 {
-	glm::vec3 relativeVelocity = rb1.GetVelocity() - rb2.GetVelocity();
+	glm::vec3 relativeVelocity = GetVelocity() - rb2.GetVelocity();
 	float relativeVelocityAlongNormal = glm::dot(relativeVelocity, collisionNormal);
 
 	float elasticity = 1.0f;
-	float impusleMagnitude = -(1 + elasticity) * relativeVelocityAlongNormal / (1 / rb1.GetMass() + 1 / rb2.GetMass());
+	float impusleMagnitude = -(1 + elasticity) * relativeVelocityAlongNormal / (1 / GetMass() + 1 / rb2.GetMass());
 
 	glm::vec3 impulse = impusleMagnitude * collisionNormal;
-	rb1.SetVelocity(rb1.GetVelocity() + impulse / rb1.GetMass());
+	SetVelocity(GetVelocity() + impulse / GetMass());
 	rb2.SetVelocity(rb2.GetVelocity() - impulse / rb2.GetMass());
 }
