@@ -34,7 +34,7 @@ public:
 	void SetPosition(glm::vec3 newPos); 
 
 	void MoveXdir(); 
-
+	float speed = 0;
 	void Delete();
 
 private:

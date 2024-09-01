@@ -152,7 +152,7 @@ void Draw::SetPosition(glm::vec3 newPos)
 
 void Draw::MoveXdir()
 {
-    position.x += 0.01;
+    position.x += speed;
 }
 
 

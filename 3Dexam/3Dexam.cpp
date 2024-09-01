@@ -76,6 +76,8 @@ int main()
 
     Collision collision; 
 
+    Cube0.speed = 0.01; 
+
    
     
     
@@ -115,8 +117,9 @@ int main()
         glm::mat4 viewproj = camera.Matrix(45.0f, 0.1f, 1000.0f, shaderProgram, "camMatrix");
 
         Cube0.MoveXdir();
+        Cube1.MoveXdir();
 
-        collision.SphereCollison(Cube0, Cube1); 
+        collision.AABBCollision(Cube0, Cube1); 
 
         Cube0.Render(shaderProgram, viewproj); 
         Cube1.Render(shaderProgram, viewproj);

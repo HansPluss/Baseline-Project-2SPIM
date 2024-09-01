@@ -8,9 +8,10 @@ class Collision
 public:
 	Collision();
 	~Collision();
-	bool SphereCollison(Draw objA, Draw objB);
-	bool AABBCollision(Draw objA, Draw objB);
+	bool SphereCollison(Draw &objA, Draw &objB);
+	bool AABBCollision(Draw &objA, Draw &objB);
 private:
 
+	void CollitionCalculations(Draw& objA, Draw& objB);
 };
 
