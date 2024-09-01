@@ -9,6 +9,7 @@
 #include "Texture.h"
 #include "Draw.h"
 #include "Camera.h"
+#include "Collision.h"
 
 // Some of the code for the spotlight is from the following repo
 // https://github.com/VictorGordan/opengl-tutorials.git
@@ -68,9 +69,12 @@ int main()
 
 
     
-    Draw Cube; 
-    Cube.DrawCube(glm::vec3(23, 100, 145), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
-   // Cube.Initalize();
+    Draw Cube0; 
+    Cube0.DrawCube(glm::vec3(23, 100, 145), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+    Draw Cube1;
+    Cube1.DrawCube(glm::vec3(23, 100, 145), glm::vec3(10, 0, 0), glm::vec3(1, 1, 1));
+
+    Collision collision; 
 
    
     
@@ -110,7 +114,14 @@ int main()
         //Set render distance and FOV
         glm::mat4 viewproj = camera.Matrix(45.0f, 0.1f, 1000.0f, shaderProgram, "camMatrix");
 
-        Cube.Render(shaderProgram, viewproj); 
+        Cube0.MoveXdir();
+
+        collision.SphereCollison(Cube0, Cube1); 
+
+        Cube0.Render(shaderProgram, viewproj); 
+        Cube1.Render(shaderProgram, viewproj);
+
+
 
 
 

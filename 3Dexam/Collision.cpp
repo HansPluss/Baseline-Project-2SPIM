@@ -1,7 +1,8 @@
 #include "Collision.h"
+#include "Draw.h"
 
 
-Collision::Collision() : position(0.0f,0.0f,0.0f), sphere_radius(1.0f), size(1.0f)
+Collision::Collision()
 {
 
 }
@@ -11,23 +12,26 @@ Collision::~Collision()
 	// not needed right now
 }
 
-bool Collision::SphereCollison(Collision otherObject)
+bool Collision::SphereCollison(Draw objA, Draw objB)
 {
-	float distance_centers = glm::length(position - otherObject.position);
+	float distance_centers = glm::length(objA.GetPosition() - objB.GetPosition());
 		
-	if (distance_centers <= (sphere_radius + otherObject.sphere_radius)) {
+	if (distance_centers <= (objA.GetSize().x + objB.GetSize().x)) {
 
-		float minimuntranslation = sphere_radius + otherObject.sphere_radius - distance_centers;
-		auto dirvec = glm::normalize(position - otherObject.position);
-		position += dirvec * minimuntranslation;
-		//otherCube.position += dirvec * minimuntranslation;
+		std::cout << "collition" << std::endl;
+		float minimuntranslation = objA.GetSize().x + objB.GetSize().x - distance_centers;
+		auto dirvec = glm::normalize(objA.GetPosition() - objB.GetPosition());
 
-		//otherObject.move = false;
+		glm::vec3 newPos; 
+	newPos = objA.GetPosition() + dirvec * minimuntranslation;
+	objA.SetPosition(newPos);
+		
 		return true; 
+
 
 	}
 	else {
-;
+; std::cout << "collition failed" << std::endl;
 		//otherCube.move = true;
 	}
 
@@ -36,13 +40,10 @@ bool Collision::SphereCollison(Collision otherObject)
 	return false;
 }
 
-bool Collision::AABBCollision(Collision otherObject)
+bool Collision::AABBCollision(Draw objA, Draw objB)
 {
-	bool collisionX = position.x + size >= otherObject.position.x &&
-		otherObject.position.x + otherObject.size >= position.x;
-	bool collisionY = position.y + size >= otherObject.position.y &&
-		otherObject.position.y + otherObject.size >= position.y;
-	bool collisionZ = position.z + size >= otherObject.position.z &&
-		otherObject.position.z + otherObject.size >= position.z;
-	return collisionX && collisionY && collisionZ;
+	if (abs(objA.GetPosition().x - objB.GetPosition().x) > (objA.GetSize().x + objB.GetPosition().x)) return false;
+	if (abs(objA.GetPosition().y - objB.GetPosition().y) > (objA.GetSize().y + objB.GetPosition().y)) return false;
+	if (abs(objA.GetPosition().z - objB.GetPosition().z) > (objA.GetSize().z + objB.GetPosition().z)) return false;
+	return true;
 }

@@ -29,11 +29,16 @@ public:
 	std::vector<Vertex> DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
 	void Render(Shader shader, glm::mat4 viewproj);
 
+	glm::vec3 GetPosition();
+	glm::vec3 GetSize(); 
+	void SetPosition(glm::vec3 newPos); 
+
+	void MoveXdir(); 
+
 	void Delete();
 
 private:
 	void Initalize();
-
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;

@@ -135,6 +135,26 @@ void Draw::Render(Shader Shader, glm::mat4 viewproj)
 
 }
 
+glm::vec3 Draw::GetPosition()
+{
+    return position; 
+}
+
+glm::vec3 Draw::GetSize()
+{
+    return objSize; 
+}
+
+void Draw::SetPosition(glm::vec3 newPos)
+{
+    position = newPos; 
+}
+
+void Draw::MoveXdir()
+{
+    position.x += 0.01;
+}
+
 
 
 
