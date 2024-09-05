@@ -80,7 +80,9 @@ void Collision::CollisionCalculations(Draw &objA, Draw &objB)
 
 	glm::vec3 normalA = objA.GetNormal();
 	glm::vec3 normalB = objB.GetNormal();
-
+	
+	glm::vec3 angularVelocityChangeA(0.0f);
+	glm::vec3 angularVelocityChangeB(0.0f);
 	// Determine primary axis of collision
 	if (normalA.x != 0)
 	{
@@ -91,6 +93,9 @@ void Collision::CollisionCalculations(Draw &objA, Draw &objB)
 		// Update velocities only along the X axis
 		objA.SetVelocity(glm::vec3(newSpeedAx, 0, speedAz)); // X velocity changes, Z remains same
 		objB.SetVelocity(glm::vec3(newSpeedBx, 0, speedBz)); // X velocity changes, Z remains same
+
+		angularVelocityChangeA.z = relativeSpeedX / massA;
+		angularVelocityChangeB.z = relativeSpeedX / massB;
 	}
 	else
 	{
@@ -101,7 +106,11 @@ void Collision::CollisionCalculations(Draw &objA, Draw &objB)
 		// Update velocities only along the Z axis
 		objA.SetVelocity(glm::vec3(speedAx, 0, newSpeedAz)); // Z velocity changes, X remains same
 		objB.SetVelocity(glm::vec3(speedBx, 0, newSpeedBz)); // Z velocity changes, X remains same
+		angularVelocityChangeA.x = relativeSpeedZ / massA;
+		angularVelocityChangeB.x = relativeSpeedZ / massB;
 	}
+	objA.SetAngularVelocity(objA.GetAngularVelocity() + angularVelocityChangeA * 0.01f);
+	objB.SetAngularVelocity(objB.GetAngularVelocity() + angularVelocityChangeB * 0.01f);
 }
 
 void Collision::AngularCollision(Draw& objA, Draw& objB)

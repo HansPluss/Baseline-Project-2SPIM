@@ -3,7 +3,7 @@
 #include "Resources/Shaders/shaderClass.h"
 #include "glm/gtc/type_ptr.hpp"
 
-Draw::Draw()
+Draw::Draw() : rotation(glm::quat(0.0, 0.0, 0.0, 0.0))
 {
 }
 
@@ -118,18 +118,23 @@ void Draw::Render(Shader Shader, glm::mat4 viewproj)
 
 
     glm::mat4 model2 = glm::mat4(1.0f);
+    
+    glm::quat quaterninon = glm::quat(0.0, 0.0, 0.0, 0.0);
+    //glm::mat4 rotationMatrix = glm::mat4_cast(quaterninon);
+    rotation = glm::mat4_cast(quaternion1);
+    model2 *= rotation;
     model2 = glm::translate(model2, position);
     model2 = glm::scale(model2, objSize);
     glUniformMatrix4fv(glGetUniformLocation(Shader.ID, "camMatrix"), 1, GL_FALSE, glm::value_ptr(viewproj * model2));
-   VAO.Bind();
-   VBO.Bind();
-   EBO1.Bind();
+    VAO.Bind();
+    VBO.Bind();
+    EBO1.Bind();
    
    glDrawElements(GL_TRIANGLES,indices.size(), GL_UNSIGNED_INT, 0);
    // glDrawArrays(GL_POINT, 0, vertices.size());
     //unbind
     VAO.Unbind();
-   VBO.Unbind();
+    VBO.Unbind();
     EBO1.Unbind();
 
 
@@ -203,7 +208,37 @@ void Draw::SetNormalVector(glm::vec3 normal)
     normalvector = normal;
 }
 
+void Draw::SetAngularVelocity(glm::vec3 angularVelocity)
+{
+    AngularVelocity = angularVelocity;
+}
+
+glm::vec3 Draw::GetAngularVelocity()
+{
+    return AngularVelocity;
+}
+
+void Draw::RotateCube(float deltaTime)
+{
+    glm::vec3 velocityDirection;
+    if (AngularVelocity.x != 0 || AngularVelocity.z != 0 ) {
+        glm::vec3 velocityDirection = glm::normalize(AngularVelocity);
+       // std::cout << "V Dir " << velocityDirection.x << ", " << velocityDirection.z << std::endl;
+    }
+    
+    float speed = glm::length(AngularVelocity);
+
+    glm::quat yRotation = glm::angleAxis(glm::radians(1.10f), glm::vec3(0.0f, speed, 0.0f));
+    quaternion1 = yRotation * quaternion1 * deltaTime;  // Update rotation (quaternion math)
+    quaternion1 = glm::normalize(quaternion1);
+
+    glm::mat4 newRotationMatrix = glm::mat4_cast(quaternion1);
+    rotation = newRotationMatrix;
+    position += AngularVelocity * deltaTime;
+}
+
 glm::vec3 Draw::GetNormal()
 {
     return normalvector;
 }
+

@@ -147,9 +147,13 @@ int main()
         //Set render distance and FOV
         glm::mat4 viewproj = camera.Matrix(45.0f, 0.1f, 1000.0f, shaderProgram, "camMatrix");
 
-        
+
+        // UNCOMMENT FOR ROTATION
+        //Cube0.RotateCube(dt);
+       //Cube1.RotateCube(dt);
         Cube0.Update(dt);
         Cube1.Update(dt);
+        
         
         //Cube1.MoveXdir();
 
@@ -202,6 +206,7 @@ void processInput(GLFWwindow* window, Draw &cube, Draw& cube1)
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
 
         glm::vec3 force(20.0f, 0.0f, 10.0f);
+      
         cube.ApplyForce(force);
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
