@@ -150,6 +150,39 @@ void Draw::SetPosition(glm::vec3 newPos)
     position = newPos; 
 }
 
+float Draw::GetMass()
+{
+    return mass;
+}
+
+void Draw::SetMass(float newMass)
+{
+    mass = newMass;
+}
+
+void Draw::SetVelocity(glm::vec3 newVelocity)
+{
+    velocity = newVelocity;
+}
+
+glm::vec3 Draw::GetVelocity()
+{
+    return velocity;
+}
+
+void Draw::ApplyForce(glm::vec3 force)
+{
+    // F = M * A
+    Acceleration += force / mass;
+}
+
+void Draw::Update(float deltaTime)
+{
+    velocity += Acceleration * deltaTime;
+    position += velocity * deltaTime;
+    Acceleration = glm::vec3(0.00f, 0.0f, 0.0f);
+}
+
 void Draw::MoveXdir()
 {
     position.x += speed;
@@ -163,4 +196,14 @@ void Draw::Delete()
     VAO.Delete();
     VBO.Delete();
     EBO1.Delete();
+}
+
+void Draw::SetNormalVector(glm::vec3 normal)
+{
+    normalvector = normal;
+}
+
+glm::vec3 Draw::GetNormal()
+{
+    return normalvector;
 }

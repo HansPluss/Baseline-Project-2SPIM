@@ -32,11 +32,17 @@ public:
 	glm::vec3 GetPosition();
 	glm::vec3 GetSize(); 
 	void SetPosition(glm::vec3 newPos); 
-
+	float GetMass();
+	void SetMass(float newMass);
+	void SetVelocity(glm::vec3 newVelocity);
+	glm::vec3 GetVelocity();
+	void ApplyForce(glm::vec3 force);
+	void Update(float deltaTime);
 	void MoveXdir(); 
 	float speed = 0;
 	void Delete();
-
+	void SetNormalVector(glm::vec3 normal);
+	glm::vec3 GetNormal();
 private:
 	void Initalize();
 
@@ -44,6 +50,12 @@ private:
 	std::vector<unsigned int> indices;
 	glm::vec3 position = glm::vec3(0,0,0); 
 	glm::vec3 objSize = glm::vec3(1,1,1);
+	glm::vec3 velocity = glm::vec3(0, 0, 0);
+	glm::vec3 Acceleration = glm::vec3(0, 0, 0);
+	glm::vec3 AngularVelocity = glm::vec3(0, 0, 0);
+	glm::vec3 AngularAcceleration = glm::vec3(0, 0, 0);
+	glm::vec3 normalvector = glm::vec3(0, 0, 0);
+	float mass = 1.0f;
 	VAO VAO;
 	VBO VBO;
 	EBO EBO1;
