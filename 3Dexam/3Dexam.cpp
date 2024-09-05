@@ -85,10 +85,10 @@ int main()
     Collision collision; 
 
     Cube0.speed = 0.01; 
-    Cube0.ApplyForce(glm::vec3(10.0f, 0.0f, 0.0f));
+    
    
 
-    Cube0.SetNormalVector(glm::vec3(1.0f, 0.0f, 1.0f));
+    Cube0.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
     Cube1.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
 
 
@@ -201,7 +201,7 @@ void processInput(GLFWwindow* window, Draw &cube, Draw& cube1)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
 
-        glm::vec3 force(20.0f, 0.0f, 20.0f);
+        glm::vec3 force(20.0f, 0.0f, 10.0f);
         cube.ApplyForce(force);
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
