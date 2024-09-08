@@ -90,8 +90,8 @@ bool Collision::InvAABBCollision(Draw& objA, Draw& objB)
 		objA.SetVelocity(glm::vec3(newSpeedAx, 0, speedAz)); // X velocity changes, Z remains same
 		objB.SetVelocity(glm::vec3(newSpeedBx, 0, speedBz)); // X velocity changes, Z remains same
 
-		angularVelocityChangeA.z = relativeSpeedX / massA;
-		angularVelocityChangeB.z = relativeSpeedX / massB;
+		angularVelocityChangeA.z = newSpeedAx / massA;
+		angularVelocityChangeB.z = newSpeedBx / massB;
 	}
 	if (abs(objB.GetPosition().z - objA.GetPosition().z) > (objA.GetSize().z - objB.GetSize().z))
 	{
@@ -101,11 +101,11 @@ bool Collision::InvAABBCollision(Draw& objA, Draw& objB)
 		// Update velocities only along the Z axis
 		objA.SetVelocity(glm::vec3(speedAx, 0, newSpeedAz)); // Z velocity changes, X remains same
 		objB.SetVelocity(glm::vec3(speedBx, 0, newSpeedBz)); // Z velocity changes, X remains same
-		angularVelocityChangeA.x = relativeSpeedZ / massA;
-		angularVelocityChangeB.x = relativeSpeedZ / massB;
+		angularVelocityChangeA.x = newSpeedAz / massA;
+		angularVelocityChangeB.x = newSpeedBz / massB;
 	}
-	objA.SetAngularVelocity(objA.GetAngularVelocity() + angularVelocityChangeA * 0.01f);
-	objB.SetAngularVelocity(objB.GetAngularVelocity() + angularVelocityChangeB * 0.01f);
+	objA.SetAngularVelocity(objA.GetVelocity());
+	objB.SetAngularVelocity(objB.GetVelocity());
 
 	return false;
 }
@@ -143,8 +143,8 @@ void Collision::CollisionCalculations(Draw &objA, Draw &objB)
 		objA.SetVelocity(glm::vec3(newSpeedAx, 0, speedAz)); // X velocity changes, Z remains same
 		objB.SetVelocity(glm::vec3(newSpeedBx, 0, speedBz)); // X velocity changes, Z remains same
 
-		angularVelocityChangeA.z = relativeSpeedX / massA;
-		angularVelocityChangeB.z = relativeSpeedX / massB;
+		angularVelocityChangeA.x = (speedAx - speedBx) / massA;
+		angularVelocityChangeB.x = (speedBx - speedAx) / massB;
 	}
 	else
 	{
@@ -155,8 +155,8 @@ void Collision::CollisionCalculations(Draw &objA, Draw &objB)
 		// Update velocities only along the Z axis
 		objA.SetVelocity(glm::vec3(speedAx, 0, newSpeedAz)); // Z velocity changes, X remains same
 		objB.SetVelocity(glm::vec3(speedBx, 0, newSpeedBz)); // Z velocity changes, X remains same
-		angularVelocityChangeA.x = relativeSpeedZ / massA;
-		angularVelocityChangeB.x = relativeSpeedZ / massB;
+		angularVelocityChangeA.z = (speedAz - speedBz) / massA;  // Use speed difference with sign
+		angularVelocityChangeB.z = (speedBz - speedAz) / massB;
 	}
 	objA.SetAngularVelocity(objA.GetAngularVelocity() + angularVelocityChangeA * 0.01f);
 	objB.SetAngularVelocity(objB.GetAngularVelocity() + angularVelocityChangeB * 0.01f);

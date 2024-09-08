@@ -330,8 +330,8 @@ void Draw::RotateCube(float deltaTime)
     
     float speed = glm::length(AngularVelocity);
 
-    glm::quat AngularRotation = glm::angleAxis(glm::radians(0.5f), glm::vec3(AngularVelocity.x, AngularVelocity.y, AngularVelocity.z));
-    Quaternion = AngularRotation * Quaternion * deltaTime;  // Update rotation (quaternion math)
+    glm::quat AngularRotation = glm::angleAxis(glm::radians(1.0f), glm::vec3(AngularVelocity.z, AngularVelocity.y, AngularVelocity.x));
+    Quaternion = Quaternion * AngularRotation * deltaTime;  // Update rotation (quaternion math)
     Quaternion = glm::normalize(Quaternion);
 
     glm::mat4 newRotationMatrix = glm::mat4_cast(Quaternion);
