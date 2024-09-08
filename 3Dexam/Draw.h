@@ -28,7 +28,7 @@ public:
 
 	void DrawCube(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)  ;
 	void DrawBoundingBox(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
-	std::vector<Vertex> DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
+	void DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
 	void Render(Shader shader, glm::mat4 viewproj);
 
 	glm::vec3 GetPosition();
@@ -57,7 +57,7 @@ private:
 	std::vector<unsigned int> indices;
 	glm::vec3 position = glm::vec3(0,0,0); 
 	glm::mat4 rotation = glm::mat4(1.0f);
-	glm::quat quaternion1 = glm::quat(1.0, 0.0, 0.0, 0.0);
+	glm::quat Quaternion = glm::quat(1.0, 0.0, 0.0, 0.0);
 	glm::vec3 objSize = glm::vec3(1,1,1);
 	glm::vec3 velocity = glm::vec3(0, 0, 0);
 	glm::vec3 Acceleration = glm::vec3(0, 0, 0);

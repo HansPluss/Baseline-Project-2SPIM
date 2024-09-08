@@ -108,13 +108,67 @@ void Draw::DrawBoundingBox(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
     this->Initalize();
 }
 
-std::vector<Vertex> Draw::DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
+void Draw::DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
 {
+    // Part of the source code is from this website 
+
+    // https://stackoverflow.com/questions/45482988/generating-spheres-vertices-indices-and-normals
+
+
     position = pos;
     objSize = size;
-    
-    
-    return std::vector<Vertex>();
+    int radius = 1.0f;
+    int circumferenceTile = 18;
+    int layerTile = 18;
+    int slices = (int)(circumferenceTile + 0.5f);
+    if (slices < 4) {
+        slices = 4;
+    }
+
+    int half_slices = slices / 2;
+    int layerCount = (int)(layerTile + 0.5f);
+    if (layerCount < 2)
+    { 
+        layerCount = 2; 
+    }
+    float pi = 3.1415f;
+    for (int layerIndex = 0; layerIndex <= layerCount; layerIndex++)
+    {
+        float v = (1.0 - (float)layerIndex / layerCount);
+        float heightOffset = std::sin((1.0 - 2.0 * layerIndex / layerCount) * pi / 2.0);
+        float cosUp = sqrt(1.0 - heightOffset * heightOffset);
+        float z = heightOffset;
+        for (int i = 0; i <= half_slices; i++)
+        {
+            float u = (float)i / (float)half_slices;
+            float angle = 2 * pi * u; // pi * 2 to get full sphere
+            float x = std::cos(angle) * cosUp;
+            float y = std::sin(angle) * cosUp;
+            Vertex V1 = Vertex{ x * radius, y * radius, z * radius, x, y, z, u, v };
+            vertices.push_back(V1);
+        }
+      
+    }
+    for (int layer = 0; layer < layerCount; layer++)
+    {
+        for (int i = 0; i < half_slices; i++)
+        {
+            // Index for the current layer and the next layer
+            int currentRow = layer * (half_slices + 1) * 2;
+            int nextRow = (layer + 1) * (half_slices + 1) * 2;
+
+            // Create two triangles (quad) between each pair of vertices in adjacent layers
+            indices.push_back(currentRow + i);        // 1st triangle: curRow, nextRow, nextRow+1
+            indices.push_back(nextRow + i);
+            indices.push_back(nextRow + i + 1);
+
+            indices.push_back(currentRow + i);        // 2nd triangle: curRow, nextRow+1, curRow+1
+            indices.push_back(nextRow + i + 1);
+            indices.push_back(currentRow + i + 1);
+        }
+    }
+  
+    this->Initalize();
 }
 
 void Draw::Initalize()
@@ -167,12 +221,12 @@ void Draw::Render(Shader Shader, glm::mat4 viewproj)
 
     glm::mat4 model2 = glm::mat4(1.0f);
     
-    glm::quat quaterninon = glm::quat(0.0, 0.0, 0.0, 0.0);
+    //glm::quat quaterninon = glm::quat(0.0, 0.0, 0.0, 0.0);
     //glm::mat4 rotationMatrix = glm::mat4_cast(quaterninon);
-    rotation = glm::mat4_cast(quaternion1);
-    model2 *= rotation;
+    rotation = glm::mat4_cast(Quaternion);
     model2 = glm::translate(model2, position);
     model2 = glm::scale(model2, objSize);
+    model2 *= rotation;
     glUniformMatrix4fv(glGetUniformLocation(Shader.ID, "camMatrix"), 1, GL_FALSE, glm::value_ptr(viewproj * model2));
     VAO.Bind();
     VBO.Bind();
@@ -276,13 +330,13 @@ void Draw::RotateCube(float deltaTime)
     
     float speed = glm::length(AngularVelocity);
 
-    glm::quat yRotation = glm::angleAxis(glm::radians(1.10f), glm::vec3(0.0f, speed, 0.0f));
-    quaternion1 = yRotation * quaternion1 * deltaTime;  // Update rotation (quaternion math)
-    quaternion1 = glm::normalize(quaternion1);
+    glm::quat AngularRotation = glm::angleAxis(glm::radians(0.5f), glm::vec3(AngularVelocity.x, AngularVelocity.y, AngularVelocity.z));
+    Quaternion = AngularRotation * Quaternion * deltaTime;  // Update rotation (quaternion math)
+    Quaternion = glm::normalize(Quaternion);
 
-    glm::mat4 newRotationMatrix = glm::mat4_cast(quaternion1);
+    glm::mat4 newRotationMatrix = glm::mat4_cast(Quaternion);
     rotation = newRotationMatrix;
-    position += AngularVelocity * deltaTime;
+    //position += AngularVelocity * deltaTime;
 }
 
 glm::vec3 Draw::GetNormal()

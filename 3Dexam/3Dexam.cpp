@@ -70,9 +70,9 @@ int main()
 
     
     Draw Cube0; 
-    Cube0.DrawCube(glm::vec3(23, 100, 145), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+    Cube0.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
     Draw Cube1;
-    Cube1.DrawCube(glm::vec3(23, 100, 145), glm::vec3(2, 0, -8), glm::vec3(1, 1, 1));
+    Cube1.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(2, 0, -8), glm::vec3(1, 1, 1));
     
     Draw BoundingBox0;
     BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(-5, 0, -5), glm::vec3(10, 1, 10));
@@ -142,8 +142,8 @@ int main()
 
 
         // UNCOMMENT FOR ROTATION
-        //Cube0.RotateCube(dt);
-       //Cube1.RotateCube(dt);
+        Cube0.RotateCube(dt);
+        Cube1.RotateCube(dt);
         Cube0.Update(dt);
         Cube1.Update(dt);
         
@@ -195,7 +195,7 @@ void processInput(GLFWwindow* window, Draw &cube, Draw& cube1)
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
 
-        glm::vec3 force(-10.0f, 0.0f, 20.0f);
+        glm::vec3 force(-10.0f, 0.0f, 10.0f);
         cube1.ApplyForce(force);
     }
        
