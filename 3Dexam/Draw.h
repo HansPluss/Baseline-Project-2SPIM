@@ -27,6 +27,7 @@ public:
 	Draw();
 
 	void DrawCube(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)  ;
+	void DrawBoundingBox(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
 	std::vector<Vertex> DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
 	void Render(Shader shader, glm::mat4 viewproj);
 

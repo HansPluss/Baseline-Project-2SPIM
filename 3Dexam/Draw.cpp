@@ -60,6 +60,54 @@ void Draw::DrawCube(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
     this->Initalize();
 }
 
+void Draw::DrawBoundingBox(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
+{
+    position = pos;
+    objSize = size;
+
+    vertices.resize(8);
+    glm::vec3 sizeXYZ = glm::vec3(1.f, 1.f, 1.f);
+
+    // Front face vertices
+    Vertex v0{ -sizeXYZ.x, -sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 1.0f };
+    Vertex v1{ sizeXYZ.x, -sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 1.0f };
+    Vertex v2{ sizeXYZ.x,  sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 0.0f };
+    Vertex v3{ -sizeXYZ.x,  sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 0.0f };
+
+    Vertex v4{ -sizeXYZ.x, -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 1.0f };
+    Vertex v5{ sizeXYZ.x, -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 1.0f };
+    Vertex v6{ sizeXYZ.x,  sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 0.0f };
+    Vertex v7{ -sizeXYZ.x,  sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 0.0f };
+
+
+    vertices = {
+   v0, // Front bottom left
+   v1, // Front bottom right
+   v2, // Front top right
+   v3, // Front top left
+   v4, // Back bottom left
+   v5, // Back bottom right
+   v6, // Back top right
+   v7  // Back top left
+    };
+
+
+
+    // Corrected indices
+    indices = {
+        // Front face
+        0, 1, 2, 2, 3, 0,
+        // Back face
+        4, 5, 6, 6, 7, 4,
+        // Left face
+        4, 0, 3, 3, 7, 4,
+        // Right face
+        1, 5, 6, 6, 2, 1
+    };
+
+    this->Initalize();
+}
+
 std::vector<Vertex> Draw::DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
 {
     position = pos;

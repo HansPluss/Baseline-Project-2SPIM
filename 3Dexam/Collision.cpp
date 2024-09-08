@@ -61,6 +61,55 @@ bool Collision::AABBCollision(Draw &objA, Draw &objB)
 	return true;
 }
 
+bool Collision::InvAABBCollision(Draw& objA, Draw& objB)
+{
+	float massA = objA.GetMass();
+	float massB = objB.GetMass();
+	float speedAx = objA.GetVelocity().x;
+	float speedAz = objA.GetVelocity().z;
+	float speedBx = objB.GetVelocity().x;
+	float speedBz = objB.GetVelocity().z;
+
+	// Calculate relative velocity in both directions
+	float relativeSpeedX = abs(speedAx - speedBx);
+	float relativeSpeedZ = abs(speedAz - speedBz);
+
+	glm::vec3 normalA = objA.GetNormal();
+	glm::vec3 normalB = objB.GetNormal();
+
+	glm::vec3 angularVelocityChangeA(0.0f);
+	glm::vec3 angularVelocityChangeB(0.0f);
+
+	if (abs(objB.GetPosition().x - objA.GetPosition().x) > (objA.GetSize().x - objB.GetSize().x))
+	{
+		// Primary collision is along the X axis
+		float newSpeedAx = ((massA - massB) * speedAx + 2 * massB * speedBx) / (massA + massB);
+		float newSpeedBx = ((massB - massA) * speedBx + 2 * massA * speedAx) / (massA + massB);
+
+		// Update velocities only along the X axis
+		objA.SetVelocity(glm::vec3(newSpeedAx, 0, speedAz)); // X velocity changes, Z remains same
+		objB.SetVelocity(glm::vec3(newSpeedBx, 0, speedBz)); // X velocity changes, Z remains same
+
+		angularVelocityChangeA.z = relativeSpeedX / massA;
+		angularVelocityChangeB.z = relativeSpeedX / massB;
+	}
+	if (abs(objB.GetPosition().z - objA.GetPosition().z) > (objA.GetSize().z - objB.GetSize().z))
+	{
+		float newSpeedAz = ((massA - massB) * speedAz + 2 * massB * speedBz) / (massA + massB);
+		float newSpeedBz = ((massB - massA) * speedBz + 2 * massA * speedAz) / (massA + massB);
+
+		// Update velocities only along the Z axis
+		objA.SetVelocity(glm::vec3(speedAx, 0, newSpeedAz)); // Z velocity changes, X remains same
+		objB.SetVelocity(glm::vec3(speedBx, 0, newSpeedBz)); // Z velocity changes, X remains same
+		angularVelocityChangeA.x = relativeSpeedZ / massA;
+		angularVelocityChangeB.x = relativeSpeedZ / massB;
+	}
+	objA.SetAngularVelocity(objA.GetAngularVelocity() + angularVelocityChangeA * 0.01f);
+	objB.SetAngularVelocity(objB.GetAngularVelocity() + angularVelocityChangeB * 0.01f);
+
+	return false;
+}
+
 
 void Collision::CollisionCalculations(Draw &objA, Draw &objB)
 {

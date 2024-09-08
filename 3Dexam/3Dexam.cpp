@@ -72,15 +72,16 @@ int main()
     Draw Cube0; 
     Cube0.DrawCube(glm::vec3(23, 100, 145), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
     Draw Cube1;
-    Cube1.DrawCube(glm::vec3(23, 100, 145), glm::vec3(10, 0, 0), glm::vec3(1, 1, 1));
-    Draw Wall0;
-    Wall0.DrawCube(glm::vec3(1, 1, 1), glm::vec3(20, 0, 0), glm::vec3(1, 1, 20));
-    Draw Wall1;
+    Cube1.DrawCube(glm::vec3(23, 100, 145), glm::vec3(2, 0, -8), glm::vec3(1, 1, 1));
+    
+    Draw BoundingBox0;
+    BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(-5, 0, -5), glm::vec3(10, 1, 10));
+    /*Draw Wall1;
     Wall1.DrawCube(glm::vec3(0.1, 0.1, 0.1), glm::vec3(-10, 0, 0), glm::vec3(1, 1, 20));
     Draw Wall2;
     Wall2.DrawCube(glm::vec3(1, 1, 1), glm::vec3(5, 0, -10), glm::vec3(20, 1, 1));
     Draw Wall3;
-    Wall3.DrawCube(glm::vec3(0.1, 0.1, 0.1), glm::vec3(5, 0, 10), glm::vec3(20, 1, 1));
+    Wall3.DrawCube(glm::vec3(0.1, 0.1, 0.1), glm::vec3(5, 0, 10), glm::vec3(20, 1, 1));*/
 
     Collision collision; 
 
@@ -91,16 +92,8 @@ int main()
     Cube0.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
     Cube1.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
 
-
-    Wall0.SetMass(10000.0f);
-    Wall1.SetMass(10000.0f);
-    Wall2.SetMass(10000.0f);
-    Wall3.SetMass(10000.0f);
-    
-    Wall0.SetNormalVector(glm::vec3(1.0f, 0.0f, 0.0f));
-    Wall1.SetNormalVector(glm::vec3(-1.0f, 0.0f, 0.0f));
-    Wall2.SetNormalVector(glm::vec3(0.0f, 0.0f, -1.0f));
-    Wall3.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
+    BoundingBox0.SetMass(10000.0f);
+    //BoundingBox0.SetNormalVector(glm::vec3(-1.0f, -1.0f, -1.0f));
 
     Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(-10.0f, 10.0f, 50.0f));
 
@@ -162,23 +155,14 @@ int main()
        
 
         //wall collision
-        collision.AABBCollision(Wall0, Cube0);
-        collision.AABBCollision(Wall0, Cube1);
-        collision.AABBCollision(Wall1, Cube0);
-        collision.AABBCollision(Wall1, Cube1);
-
-        collision.AABBCollision(Wall2, Cube0);
-        collision.AABBCollision(Wall2, Cube1);
-        collision.AABBCollision(Wall3, Cube0);
-        collision.AABBCollision(Wall3, Cube1);
+        collision.InvAABBCollision(BoundingBox0, Cube0);
+        collision.InvAABBCollision(BoundingBox0, Cube1);
 
         Cube0.Render(shaderProgram, viewproj); 
         Cube1.Render(shaderProgram, viewproj);
 
-        Wall0.Render(shaderProgram, viewproj);
-        Wall1.Render(shaderProgram, viewproj);
-        Wall2.Render(shaderProgram, viewproj);
-        Wall3.Render(shaderProgram, viewproj);
+
+        BoundingBox0.Render(shaderProgram, viewproj);
 
     
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
