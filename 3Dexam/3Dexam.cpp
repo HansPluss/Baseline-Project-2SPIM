@@ -87,8 +87,8 @@ int main()
    
 
     Cube0.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
-    Cube1.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
-    Cube2.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
+    Cube1.SetNormalVector(glm::vec3(1.0f, 0.0f, 0.0f));
+    Cube2.SetNormalVector(glm::vec3(1.0f, 0.0f, 0.0f));
 
     BoundingBox0.SetMass(10000.0f);
 

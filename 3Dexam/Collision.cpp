@@ -15,12 +15,14 @@ Collision::~Collision()
 bool Collision::SphereCollison(Draw& objA, Draw& objB, float DeltaTime)
 {
 	//float VelocityScale = 0.05f;
-	glm::vec3 posA = objA.GetPosition() + objA.GetVelocity()* DeltaTime;
-	glm::vec3 posB = objB.GetPosition() + objB.GetVelocity()* DeltaTime;
+	glm::vec3 posA = objA.GetPosition() + objA.GetVelocity() * DeltaTime;
+	glm::vec3 posB = objB.GetPosition() + objB.GetVelocity() * DeltaTime;
 	float distance_centers = glm::length(posA - posB);
 
 	if (distance_centers <= (objA.GetSize().x + objB.GetSize().x)) {
-		CollisionCalculations(objA, objB, DeltaTime);
+		//CollisionCalculations(objA, objB, DeltaTime);
+		BallCollisionResponse(objA, objB);
+
 
 		//std::cout << "collition" << std::endl;
 		//    float minimuntranslation = objA.GetSize().x + objB.GetSize().x - distance_centers;
@@ -109,7 +111,7 @@ void Collision::CollisionCalculations(Draw &objA, Draw &objB, float DeltaTime)
 	glm::vec3 angularVelocityChangeA(0.0f);
 	glm::vec3 angularVelocityChangeB(0.0f);
 	// Determine primary axis of collision
-	if (normalA.x != 0)
+	if (normalA.b != 0)
 	{
 		// Primary collision is along the X axis
 		float newSpeedAx = ((massA - massB) * speedAx + 2 * massB * speedBx) / (massA + massB);
@@ -186,4 +188,31 @@ void Collision::AngularCollision(Draw& objA, Draw& objB)
 	objB.SetVelocity(finalVelocityB);
 
 	
+}
+
+void Collision::BallCollisionResponse(Draw& objA, Draw& objB)
+{
+	float massA = objA.GetMass();
+	float massB = objB.GetMass();
+	glm::vec3 speedA = objA.GetVelocity();
+	glm::vec3 speedB = objB.GetVelocity();
+
+
+
+	
+	glm::vec3 angularVelocityChangeA(0.0f);
+	glm::vec3 angularVelocityChangeB(0.0f);
+	glm::vec3 newSpeedA = ((massA - massB) * speedA + 2 * massB * speedB) / (massA + massB);
+	glm::vec3 newSpeedB = ((massB - massA) * speedB + 2 * massA * speedA) / (massA + massB);
+
+	// Update velocities only along the X axis
+	objA.SetVelocity(newSpeedA); // X velocity changes, Z remains same
+	objB.SetVelocity(newSpeedB); // X velocity changes, Z remains same
+
+	angularVelocityChangeA = (speedA - speedB) / massA;
+	angularVelocityChangeB = (speedB - speedA) / massB;
+	// Determine primary axis of collision
+	
+	objA.SetAngularVelocity(objA.GetVelocity() * 0.01f);
+	objB.SetAngularVelocity(objB.GetVelocity() * 0.01f);
 }

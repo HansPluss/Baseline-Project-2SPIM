@@ -16,5 +16,6 @@ public:
 private:
 	void CollisionCalculations(Draw& objA, Draw& objB, float DeltaTime);
 	void AngularCollision(Draw& objA, Draw& objB);
+	void BallCollisionResponse(Draw& objA, Draw& objB);
 };
 
