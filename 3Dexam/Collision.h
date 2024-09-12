@@ -14,7 +14,7 @@ public:
 	bool InvAABBCollision(Draw& objA, Draw& objB, float DeltaTime);
 	
 private:
-	void CollisionCalculations(Draw& objA, Draw& objB);
+	void CollisionCalculations(Draw& objA, Draw& objB, float DeltaTime);
 	void AngularCollision(Draw& objA, Draw& objB);
 };
 

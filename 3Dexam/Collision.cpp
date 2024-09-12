@@ -20,7 +20,7 @@ bool Collision::SphereCollison(Draw& objA, Draw& objB, float DeltaTime)
 	float distance_centers = glm::length(posA - posB);
 
 	if (distance_centers <= (objA.GetSize().x + objB.GetSize().x)) {
-		CollisionCalculations(objA, objB);
+		CollisionCalculations(objA, objB, DeltaTime);
 
 		//std::cout << "collition" << std::endl;
 		//    float minimuntranslation = objA.GetSize().x + objB.GetSize().x - distance_centers;
@@ -59,7 +59,7 @@ bool Collision::AABBCollision(Draw &objA, Draw &objB, float DeltaTime)
 		return false;
 	}
 	std::cout << "collition" << std::endl;
-	CollisionCalculations(objA, objB);
+	CollisionCalculations(objA, objB, DeltaTime);
 
 	//AngularCollision(objB, objA);
 	return true;
@@ -87,7 +87,7 @@ bool Collision::InvAABBCollision(Draw& objA, Draw& objB, float DeltaTime)
 }
 
 
-void Collision::CollisionCalculations(Draw &objA, Draw &objB)
+void Collision::CollisionCalculations(Draw &objA, Draw &objB, float DeltaTime)
 {
 	//    1/2mv0^2 = 1/2mv^2
 

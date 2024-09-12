@@ -16,7 +16,7 @@
 //
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window, Draw &cube, Draw &cube1);
+void processInput(GLFWwindow* window, Draw &cube, Draw &cube1, Draw &cube2);
 
 // settings
 const unsigned int SCR_WIDTH = 1920;
@@ -73,6 +73,9 @@ int main()
     Cube0.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
     Draw Cube1;
     Cube1.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(2, 0, -8), glm::vec3(1, 1, 1));
+
+    Draw Cube2;
+    Cube2.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(-4, 0, -4), glm::vec3(1, 1, 1));
     
     Draw BoundingBox0;
     BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(-5, 0, -5), glm::vec3(10, 1, 10));
@@ -85,6 +88,7 @@ int main()
 
     Cube0.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
     Cube1.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
+    Cube2.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
 
     BoundingBox0.SetMass(10000.0f);
 
@@ -113,7 +117,7 @@ int main()
     while (!glfwWindowShouldClose(window))
     {
  
-        processInput(window, Cube0,Cube1);
+        processInput(window, Cube0, Cube1, Cube2);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -137,22 +141,28 @@ int main()
         // UNCOMMENT FOR ROTATION
         Cube0.RotateCube(dt);
         Cube1.RotateCube(dt);
+        Cube2.RotateCube(dt);
         Cube0.Update(dt);
         Cube1.Update(dt);
+        Cube2.Update(dt);
 
 
 
         Cube0.Render(shaderProgram, viewproj); 
         Cube1.Render(shaderProgram, viewproj);
+        Cube2.Render(shaderProgram, viewproj);
 
         BoundingBox0.Render(shaderProgram, viewproj);
 
         //wall collision
         collision.InvAABBCollision(BoundingBox0, Cube0, dt);
         collision.InvAABBCollision(BoundingBox0, Cube1, dt);
+        collision.InvAABBCollision(BoundingBox0, Cube2, dt);
 
         //spheres collision
         collision.SphereCollison(Cube0, Cube1, dt);
+        collision.SphereCollison(Cube0, Cube2, dt);
+        collision.SphereCollison(Cube1, Cube2, dt);
 
 
     
@@ -174,7 +184,7 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window, Draw &cube, Draw& cube1)
+void processInput(GLFWwindow* window, Draw &cube, Draw& cube1, Draw &cube2)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -188,6 +198,7 @@ void processInput(GLFWwindow* window, Draw &cube, Draw& cube1)
 
         glm::vec3 force(-10.0f, 0.0f, 10.0f);
         cube1.ApplyForce(force);
+        cube2.ApplyForce(force);
     }
        
    
