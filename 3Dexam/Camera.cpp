@@ -4,6 +4,7 @@
 
 Camera::Camera(int width, int height, glm::vec3 position)
 {
+	Orientation = glm::rotate(glm::mat4(1.0f), angle, RotationAxis) * glm::vec4(Orientation, 1.0f);
 	Camera::width = width;
 	Camera::height = height;
 	Position = position;

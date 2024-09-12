@@ -19,8 +19,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, Draw &cube, Draw &cube1);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 
 
 int main()
@@ -76,12 +76,6 @@ int main()
     
     Draw BoundingBox0;
     BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(-5, 0, -5), glm::vec3(10, 1, 10));
-    /*Draw Wall1;
-    Wall1.DrawCube(glm::vec3(0.1, 0.1, 0.1), glm::vec3(-10, 0, 0), glm::vec3(1, 1, 20));
-    Draw Wall2;
-    Wall2.DrawCube(glm::vec3(1, 1, 1), glm::vec3(5, 0, -10), glm::vec3(20, 1, 1));
-    Draw Wall3;
-    Wall3.DrawCube(glm::vec3(0.1, 0.1, 0.1), glm::vec3(5, 0, 10), glm::vec3(20, 1, 1));*/
 
     Collision collision; 
 
@@ -93,9 +87,8 @@ int main()
     Cube1.SetNormalVector(glm::vec3(0.0f, 0.0f, 1.0f));
 
     BoundingBox0.SetMass(10000.0f);
-    //BoundingBox0.SetNormalVector(glm::vec3(-1.0f, -1.0f, -1.0f));
 
-    Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(-10.0f, 10.0f, 50.0f));
+    Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(-5.0f, 25.0f, -5.0f));
 
     Texture texture("Resources/Textures/icon.jpg", shaderProgram);
     glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -146,23 +139,21 @@ int main()
         Cube1.RotateCube(dt);
         Cube0.Update(dt);
         Cube1.Update(dt);
-        
-        
-        //Cube1.MoveXdir();
 
-        //cube collision
-        collision.AABBCollision(Cube0, Cube1); 
-       
 
-        //wall collision
-        collision.InvAABBCollision(BoundingBox0, Cube0);
-        collision.InvAABBCollision(BoundingBox0, Cube1);
 
         Cube0.Render(shaderProgram, viewproj); 
         Cube1.Render(shaderProgram, viewproj);
 
-
         BoundingBox0.Render(shaderProgram, viewproj);
+
+        //wall collision
+        collision.InvAABBCollision(BoundingBox0, Cube0, dt);
+        collision.InvAABBCollision(BoundingBox0, Cube1, dt);
+
+        //spheres collision
+        collision.SphereCollison(Cube0, Cube1, dt);
+
 
     
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
