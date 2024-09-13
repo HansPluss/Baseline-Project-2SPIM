@@ -9,9 +9,9 @@ Draw::Draw() : rotation(glm::quat(0.0, 0.0, 0.0, 0.0))
 
 void Draw::DrawCube(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
 {
-    
-    position = pos; 
-    objSize = size; 
+
+    position = pos;
+    objSize = size;
 
     vertices.resize(8);
     glm::vec3 sizeXYZ = glm::vec3(1.f, 1.f, 1.f);
@@ -27,35 +27,69 @@ void Draw::DrawCube(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
     Vertex v6{ sizeXYZ.x,  sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 0.0f };
     Vertex v7{ -sizeXYZ.x,  sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 0.0f };
 
-    
-         vertices = {
-        v0, // Front bottom left
-        v1, // Front bottom right
-        v2, // Front top right
-        v3, // Front top left
-        v4, // Back bottom left
-        v5, // Back bottom right
-        v6, // Back top right
-        v7  // Back top left
+
+    vertices = {
+   v0, // Front bottom left
+   v1, // Front bottom right
+   v2, // Front top right
+   v3, // Front top left
+   v4, // Back bottom left
+   v5, // Back bottom right
+   v6, // Back top right
+   v7  // Back top left
     };
 
-    
+
 
     // Corrected indices
-         indices = {
-             // Front face
-             0, 1, 2, 2, 3, 0,
-             // Back face
-             4, 5, 6, 6, 7, 4,
-             // Left face
-             4, 0, 3, 3, 7, 4,
-             // Right face
-             1, 5, 6, 6, 2, 1,
-             // Top face
-             3, 2, 6, 6, 7, 3,
-             // Bottom face
-             4, 5, 1, 1, 0, 4
-         };
+    indices = {
+        // Front face
+        0, 1, 2, 2, 3, 0,
+        // Back face
+        4, 5, 6, 6, 7, 4,
+        // Left face
+        4, 0, 3, 3, 7, 4,
+        // Right face
+        1, 5, 6, 6, 2, 1,
+        // Top face
+        3, 2, 6, 6, 7, 3,
+        // Bottom face
+        4, 5, 1, 1, 0, 4
+    };
+
+    this->Initalize();
+}
+
+void Draw::DrawPlane(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
+{
+
+    position = pos;
+    objSize = size;
+
+    vertices.resize(4);
+    glm::vec3 sizeXYZ = glm::vec3(1.f, 1.f, 1.f);
+
+    // face vertices
+    Vertex v1{ sizeXYZ.x,  -sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 0.0f };
+    Vertex v2{ -sizeXYZ.x,  -sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 0.0f };
+    Vertex v3{ sizeXYZ.x,  -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 1.0f };
+    Vertex v0{ -sizeXYZ.x,  -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 1.0f };
+
+
+    vertices = {
+   v1, // Front top right
+   v2, // Front top left
+   v3, // Back top right
+   v0  // Back top left
+    };
+
+
+
+    // Corrected indices
+    indices = {
+        // Top face
+    0,1,2,1,2,3
+    };
 
     this->Initalize();
 }
@@ -128,8 +162,8 @@ void Draw::DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
     int half_slices = slices / 2;
     int layerCount = (int)(layerTile + 0.5f);
     if (layerCount < 2)
-    { 
-        layerCount = 2; 
+    {
+        layerCount = 2;
     }
     float pi = 3.1415f;
     for (int layerIndex = 0; layerIndex <= layerCount; layerIndex++)
@@ -147,7 +181,7 @@ void Draw::DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
             Vertex V1 = Vertex{ x * radius, y * radius, z * radius, x, y, z, u, v };
             vertices.push_back(V1);
         }
-      
+
     }
     for (int layer = 0; layer < layerCount; layer++)
     {
@@ -167,7 +201,7 @@ void Draw::DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
             indices.push_back(currentRow + i + 1);
         }
     }
-  
+
     this->Initalize();
 }
 
@@ -220,7 +254,7 @@ void Draw::Render(Shader Shader, glm::mat4 viewproj)
 
 
     glm::mat4 model2 = glm::mat4(1.0f);
-    
+
     //glm::quat quaterninon = glm::quat(0.0, 0.0, 0.0, 0.0);
     //glm::mat4 rotationMatrix = glm::mat4_cast(quaterninon);
     rotation = glm::mat4_cast(Quaternion);
@@ -231,10 +265,10 @@ void Draw::Render(Shader Shader, glm::mat4 viewproj)
     VAO.Bind();
     VBO.Bind();
     EBO1.Bind();
-   
-   glDrawElements(GL_TRIANGLES,indices.size(), GL_UNSIGNED_INT, 0);
-   // glDrawArrays(GL_POINT, 0, vertices.size());
-    //unbind
+
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    // glDrawArrays(GL_POINT, 0, vertices.size());
+     //unbind
     VAO.Unbind();
     VBO.Unbind();
     EBO1.Unbind();
@@ -244,17 +278,17 @@ void Draw::Render(Shader Shader, glm::mat4 viewproj)
 
 glm::vec3 Draw::GetPosition()
 {
-    return position; 
+    return position;
 }
 
 glm::vec3 Draw::GetSize()
 {
-    return objSize; 
+    return objSize;
 }
 
 void Draw::SetPosition(glm::vec3 newPos)
 {
-    position = newPos; 
+    position = newPos;
 }
 
 float Draw::GetMass()
@@ -323,14 +357,14 @@ glm::vec3 Draw::GetAngularVelocity()
 void Draw::RotateCube(float deltaTime)
 {
     glm::vec3 velocityDirection;
-    if (AngularVelocity.x != 0 || AngularVelocity.z != 0 ) {
+    if (AngularVelocity.x != 0 || AngularVelocity.z != 0) {
         glm::vec3 velocityDirection = glm::normalize(AngularVelocity);
-       // std::cout << "V Dir " << velocityDirection.x << ", " << velocityDirection.z << std::endl;
+        // std::cout << "V Dir " << velocityDirection.x << ", " << velocityDirection.z << std::endl;
     }
-    
+
     float speed = glm::length(AngularVelocity);
 
-    glm::quat AngularRotation = glm::angleAxis(glm::radians(1.0f), glm::vec3(-AngularVelocity.z, 0.0f,-AngularVelocity.x));
+    glm::quat AngularRotation = glm::angleAxis(glm::radians(1.0f), glm::vec3(-AngularVelocity.z, 0.0f, -AngularVelocity.x));
     Quaternion = Quaternion * AngularRotation * deltaTime;  // Update rotation (quaternion math)
     Quaternion = glm::normalize(Quaternion);
 

@@ -11,7 +11,7 @@
 #include "Resources/Shaders/EBO.h"
 #include <glm/gtc/quaternion.hpp>
 
-class Shader; 
+class Shader;
 struct Vertex
 {
 
@@ -26,21 +26,22 @@ class Draw {
 public:
 	Draw();
 
-	void DrawCube(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)  ;
+	void DrawCube(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
+	void DrawPlane(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
 	void DrawBoundingBox(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
 	void DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
 	void Render(Shader shader, glm::mat4 viewproj);
 
 	glm::vec3 GetPosition();
-	glm::vec3 GetSize(); 
-	void SetPosition(glm::vec3 newPos); 
+	glm::vec3 GetSize();
+	void SetPosition(glm::vec3 newPos);
 	float GetMass();
 	void SetMass(float newMass);
 	void SetVelocity(glm::vec3 newVelocity);
 	glm::vec3 GetVelocity();
 	void ApplyForce(glm::vec3 force);
 	void Update(float deltaTime);
-	void MoveXdir(); 
+	void MoveXdir();
 	float speed = 0;
 	void Delete();
 	void SetNormalVector(glm::vec3 normal);
@@ -48,17 +49,17 @@ public:
 	glm::vec3 GetAngularVelocity();
 	void RotateCube(float deltaTime);
 	glm::vec3 GetNormal();
-	
-	
+
+
 private:
 	void Initalize();
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-	glm::vec3 position = glm::vec3(0,0,0); 
+	glm::vec3 position = glm::vec3(0, 0, 0);
 	glm::mat4 rotation = glm::mat4(1.0f);
 	glm::quat Quaternion = glm::quat(1.0, 0.0, 0.0, 0.0);
-	glm::vec3 objSize = glm::vec3(1,1,1);
+	glm::vec3 objSize = glm::vec3(1, 1, 1);
 	glm::vec3 velocity = glm::vec3(0, 0, 0);
 	glm::vec3 Acceleration = glm::vec3(0, 0, 0);
 	glm::vec3 AngularVelocity = glm::vec3(0, 0, 0);
