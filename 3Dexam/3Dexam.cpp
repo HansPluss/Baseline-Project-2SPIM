@@ -22,6 +22,10 @@ void processInput(GLFWwindow* window, Draw& cube0);
 const unsigned int SCR_WIDTH = 1920;
 const unsigned int SCR_HEIGHT = 1080;
 
+struct Position {
+    double x;
+    double y;
+};
 
 int main()
 {
@@ -71,28 +75,42 @@ int main()
 
 
     Draw Cube0;
-    Cube0.DrawSphere(glm::vec3(23, 100, 145), glm::vec3( -21, 0, -5), glm::vec3(0.45, 0.45, 0.45));
+    Cube0.DrawSphere(glm::vec3(23, 100, 145), glm::vec3( -15, 0, 0), glm::vec3(0.45, 0.45, 0.45));
 
     Draw BoundingBox0;
-    BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(-10, 0, -5), glm::vec3(20, 1, 10));
+    BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), glm::vec3(20, 1, 10));
     Draw TableSurface;
-    TableSurface.DrawPlane(glm::vec3(1, 1, 1), glm::vec3(-10, 0, -5), glm::vec3(20, 1, 10));
+    TableSurface.DrawPlane(glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), glm::vec3(20, 1, 10));
 
     Collision collision;
 
     BoundingBox0.SetMass(10000.0f);
 
-    Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(-5.0f, 25.0f, -5.0f));
+    Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 40.0f, 0.0f));
 
     Texture wood("Resources/Textures/wood.png", shaderProgram);
     Texture green("Resources/Textures/green.jpg", shaderProgram);
+
+    int ballNumber = 1;
+    std::vector<Position> ballPositions;
+    for (int row = 0; row < 5; ++row) {
+        for (int col = 0; col <= row; ++col) {
+            // Calculate x and y positions based on row and column
+            double x = col * 1.f - row * 0.5f;  // Center balls by subtracting row * radius
+            double y = -row * 1.f;                   // Increase y with each row
+
+            ballPositions.push_back({ x , -y +10});
+            //std::cout << "Ball " << ballNumber << ": (" << x << ", " << y << ")\n";
+            ++ballNumber;
+        }
+    }
 
     std::vector<Texture> textures;
     std::vector<Draw> balls;
     char basePath[] = "Resources/Textures/";
     char filetype[] = ".png";
 
-    for (int i = 1; i <= 14; ++i) {
+    for (int i = 1; i <= 15; ++i) {
         int j;
         if (i % 2) {
             j = 4;
@@ -108,7 +126,7 @@ int main()
         textures.push_back(tt);
 
         Draw ball;
-        ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(i - 12, 0, j - 10), glm::vec3(0.45, 0.45, 0.45));
+        ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(ballPositions[i-1].y, 0, ballPositions[i-1].x), glm::vec3(0.45, 0.45, 0.45));
         balls.push_back(ball);
     }
 
