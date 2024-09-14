@@ -276,6 +276,8 @@ void Draw::Render(Shader Shader, glm::mat4 viewproj)
 
 }
 
+
+
 glm::vec3 Draw::GetPosition()
 {
     return position;

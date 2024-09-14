@@ -71,12 +71,12 @@ int main()
 
 
     Draw Cube0;
-    Cube0.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+    Cube0.DrawSphere(glm::vec3(23, 100, 145), glm::vec3( -21, 0, -5), glm::vec3(0.45, 0.45, 0.45));
 
     Draw BoundingBox0;
-    BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(-5, 0, -5), glm::vec3(10, 1, 10));
+    BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(-10, 0, -5), glm::vec3(20, 1, 10));
     Draw TableSurface;
-    TableSurface.DrawPlane(glm::vec3(1, 1, 1), glm::vec3(-5, 0, -5), glm::vec3(10, 1, 10));
+    TableSurface.DrawPlane(glm::vec3(1, 1, 1), glm::vec3(-10, 0, -5), glm::vec3(20, 1, 10));
 
     Collision collision;
 
@@ -108,7 +108,7 @@ int main()
         textures.push_back(tt);
 
         Draw ball;
-        ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(i - 12, 0, j - 10), glm::vec3(1, 1, 1));
+        ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(i - 12, 0, j - 10), glm::vec3(0.45, 0.45, 0.45));
         balls.push_back(ball);
     }
 

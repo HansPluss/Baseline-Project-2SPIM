@@ -1,8 +1,4 @@
 #pragma once
-#include "glm/mat4x3.hpp"
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 class Draw; 
 class Collision
 {
@@ -15,7 +11,6 @@ public:
 	
 private:
 	void CollisionCalculations(Draw& objA, Draw& objB, float DeltaTime);
-	void AngularCollision(Draw& objA, Draw& objB);
 	void BallCollisionResponse(Draw& objA, Draw& objB);
 };
 

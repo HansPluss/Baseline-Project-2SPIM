@@ -32,6 +32,7 @@ public:
 	void DrawSphere(glm::vec3 Color, glm::vec3 pos, glm::vec3 size);
 	void Render(Shader shader, glm::mat4 viewproj);
 
+
 	glm::vec3 GetPosition();
 	glm::vec3 GetSize();
 	void SetPosition(glm::vec3 newPos);
