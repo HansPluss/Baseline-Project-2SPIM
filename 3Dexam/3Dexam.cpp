@@ -10,6 +10,8 @@
 #include "Draw.h"
 #include "Camera.h"
 #include "Collision.h"
+#include "Grid.h"
+#include "memory"
 #include <chrono>
 // Some of the code for the spotlight is from the following repo
 // https://github.com/VictorGordan/opengl-tutorials.git
@@ -71,11 +73,16 @@ int main()
     lightShader.Activate();
 
 
-
+    int cellSize = 128; 
+    int gridSizeX = 4000; 
+    int gridSizeZ = 4000; 
+    std::unique_ptr<Grid> m_grid = std::make_unique<Grid>(gridSizeX, gridSizeZ, cellSize);
 
 
     Draw Cube0;
     Cube0.DrawSphere(glm::vec3(23, 100, 145), glm::vec3( -15, 0, 0), glm::vec3(0.45, 0.45, 0.45));
+     m_grid->AddBaLL(&Cube0); 
+
 
     Draw BoundingBox0;
     BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), glm::vec3(20, 1, 10));
@@ -128,6 +135,7 @@ int main()
         Draw ball;
         ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(ballPositions[i-1].y, 0, ballPositions[i-1].x), glm::vec3(0.45, 0.45, 0.45));
         balls.push_back(ball);
+        m_grid->AddBaLL(&ball);
     }
 
     Texture queball("Resources/Textures/queball.png", shaderProgram);
@@ -178,11 +186,12 @@ int main()
         Cube0.RotateCube(dt);
         //Cube1.RotateCube(dt);
         //Cube2.RotateCube(dt);
-        Cube0.Update(dt);
+        Cube0.Update(dt, m_grid.get());
         for (size_t i = 0; i < balls.size(); ++i) {
-            balls[i].Update(dt);
+            balls[i].Update(dt, m_grid.get());
             balls[i].RotateCube(dt);
         }
+ 
 
         // balls
         glBindTexture(GL_TEXTURE_2D, queball.texture);
@@ -205,20 +214,9 @@ int main()
         collision.InvAABBCollision(BoundingBox0, Cube0, dt);
 
         //spheres collision
-        //collision.SphereCollison(Cube0, Cube1, dt);
-        //collision.SphereCollison(Cube0, Cube2, dt);
-        //collision.SphereCollison(Cube1, Cube2, dt);
-        for (size_t i = 0; i < balls.size(); ++i) {
-            for (size_t j = i + 1; j < balls.size(); ++j) {
-                // Check collision between ball i and ball j
-                collision.SphereCollison(balls[i], balls[j], dt);
-            }
-        }
+ 
 
-        for (size_t i = 0; i < balls.size(); ++i) {
-            collision.SphereCollison(Cube0, balls[i], dt);
-        }
-
+        collision.UpdateCollision(m_grid.get(), dt); 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -244,7 +242,7 @@ void processInput(GLFWwindow* window, Draw& cube0)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
 
-        glm::vec3 force(20.0f, 0.0f, 10.0f);
+        glm::vec3 force(20.0f, 0.0f, 0.0f);
 
         cube0.ApplyForce(force);
     }

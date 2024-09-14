@@ -4,6 +4,7 @@
 #include "glm/mat4x3.hpp"
 #include "iostream"
 #include <glm/gtc/type_ptr.hpp>
+#include "Grid.h"
 
 
 
@@ -15,6 +16,39 @@ Collision::Collision()
 Collision::~Collision()
 {
 	// not needed right now
+}
+
+void Collision::UpdateCollision(Grid* grid, float dt)
+{
+	for (int i = 0; i < grid->m_cells.size(); ++i)
+	{
+		int x = i % grid->m_numXCells;
+		int y = i / grid->m_numXCells; 
+
+		Cell& cell = grid->m_cells[i];
+
+		for (int j = 0; j < cell.balls.size(); ++j)
+		{
+			Draw* ball = cell.balls[j];
+			CheckCollision(ball, cell.balls, j + 1, dt); 
+			if (x > 0)
+			{
+				CheckCollision(ball, grid->getCell(x - 1, y)->balls, 0, dt);
+				if (y > 0)
+				{
+					CheckCollision(ball, grid->getCell(x-1,y-1)->balls, 0, dt); 
+				}
+				if (y < grid->m_numYCells - 1)
+				{
+					CheckCollision(ball, grid->getCell(x - 1, y + 1)->balls, 0, dt);
+				}
+			}
+			if (y > 0)
+			{
+				CheckCollision(ball, grid->getCell(x, y - 1)->balls, 0, dt);
+			}
+		}
+	}
 }
 
 bool Collision::SphereCollison(Draw& objA, Draw& objB, float DeltaTime)
@@ -171,4 +205,12 @@ void Collision::BallCollisionResponse(Draw& objA, Draw& objB)
 	// Calculate and set angular velocity (optional, if needed)
 	objA.SetAngularVelocity(glm::cross(impulseVector, normal));
 	objB.SetAngularVelocity(glm::cross(-impulseVector, normal));
+}
+
+void Collision::CheckCollision(Draw* ball, std::vector<Draw*>& BallToCheck, int startingIndex, float dt)
+{
+	for (int i = startingIndex; i < BallToCheck.size(); ++i)
+	{
+		SphereCollison(*ball, *BallToCheck[i], dt);
+	}
 }

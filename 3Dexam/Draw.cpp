@@ -5,6 +5,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include "Resources/Shaders/shaderClass.h"
+#include "Grid.h"
 
 Draw::Draw() : rotation(glm::quat(0.0, 0.0, 0.0, 0.0))
 {
@@ -235,27 +236,6 @@ void Draw::Initalize()
 
 void Draw::Render(Shader Shader, glm::mat4 viewproj)
 {
-
-    //// Ensure VAO, VBO, EBO are generated
-    ////if (VAO.ID == 0 || VBO.ID == 0 || EBO.ID == 0) {
-    ////    std::cerr << "Error: VAO, VBO, or EBO not generated." << std::endl;
-    ////    return;  // Exit early to avoid using uninitialized objects
-    ////}
-    //std::cout << "Indecies " << indices.size() << " |   Vertices " << vertices.size() << std::endl;
-    //if (vertices.empty() || indices.empty()) {
-    //    std::cerr << "Error: Vertices or indices are empty." << std::endl;
-    //    return;
-    //}
-    //GLint success;
-    //glGetProgramiv(Shader.ID, GL_LINK_STATUS, &success);
-    //if (!success) {
-    //    std::cerr << "Error: Shader program linking failed." << std::endl;
-    //    return;
-    //}
-
-
-
-
     glm::mat4 model2 = glm::mat4(1.0f);
 
     //glm::quat quaterninon = glm::quat(0.0, 0.0, 0.0, 0.0);
@@ -322,11 +302,18 @@ void Draw::ApplyForce(glm::vec3 force)
     Acceleration += force / mass;
 }
 
-void Draw::Update(float deltaTime)
+void Draw::Update(float deltaTime, Grid* grid)
 {
     velocity += Acceleration * deltaTime;
     position += velocity * deltaTime;
     Acceleration = glm::vec3(0.00f, 0.0f, 0.0f);
+
+    Cell* newCell = grid->getCell(this->position); 
+    if (newCell != this->ownerCell)
+    {
+        grid->RemoveBallFromCell(this);
+        grid->AddBaLL(this, newCell); 
+    }
 }
 
 void Draw::MoveXdir()

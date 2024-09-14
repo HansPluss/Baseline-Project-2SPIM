@@ -7,12 +7,19 @@ struct Cell {
 };
 class Grid
 {
-
+	friend class Collision;
 public: 
 	Grid(int width, int height, int cellSize); 
 	~Grid(); 
 
-	Cell& getCell(int x, int y);
+	void AddBaLL(Draw* ball);
+	void AddBaLL(Draw* ball, Cell* cell);
+
+	Cell* getCell(int x, int y);
+	Cell* getCell(const glm::vec3& pos);
+
+
+	void RemoveBallFromCell(Draw* ball); 
 
 private: 
 	std::vector<Cell> m_cells; 

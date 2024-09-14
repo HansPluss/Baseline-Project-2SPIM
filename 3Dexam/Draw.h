@@ -9,6 +9,8 @@
 
 
 class Shader;
+struct Cell; 
+class Grid; 
 struct Vertex
 {
 
@@ -38,7 +40,7 @@ public:
 	void SetVelocity(glm::vec3 newVelocity);
 	glm::vec3 GetVelocity();
 	void ApplyForce(glm::vec3 force);
-	void Update(float deltaTime);
+	void Update(float deltaTime, Grid* grid);
 	void MoveXdir();
 	float speed = 0;
 	void Delete();
@@ -48,6 +50,9 @@ public:
 	void RotateCube(float deltaTime);
 	glm::vec3 GetNormal();
 
+
+	Cell* ownerCell = nullptr; 
+	int cellvectorindex = -1; 
 
 private:
 	void Initalize();
