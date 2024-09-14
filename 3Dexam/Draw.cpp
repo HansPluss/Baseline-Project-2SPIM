@@ -1,7 +1,10 @@
 #include "Draw.h"
-#include "glm/glm.hpp"
 #include "Resources/Shaders/shaderClass.h"
 #include "glm/gtc/type_ptr.hpp"
+#include <cmath>
+#include <iostream>
+#include <glm/glm.hpp>
+#include "Resources/Shaders/shaderClass.h"
 
 Draw::Draw() : rotation(glm::quat(0.0, 0.0, 0.0, 0.0))
 {

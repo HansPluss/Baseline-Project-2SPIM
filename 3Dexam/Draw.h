@@ -1,15 +1,12 @@
 #pragma once
-#include <array>
 #include <vector>
-#include <cmath>
-#include <iostream>
-#include <glm/glm.hpp>
-#include "Resources/Shaders/shaderClass.h"
-#include <glm/gtc/matrix_transform.hpp>
 #include "Resources/Shaders/VAO.h"
 #include "Resources/Shaders/VBO.h"
 #include "Resources/Shaders/EBO.h"
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include "glm/glm.hpp"
+
 
 class Shader;
 struct Vertex
