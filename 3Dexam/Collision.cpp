@@ -5,7 +5,7 @@
 #include "iostream"
 #include <glm/gtc/type_ptr.hpp>
 #include "Grid.h"
-
+#include "QuadTree.h"
 
 
 Collision::Collision()
@@ -115,6 +115,23 @@ bool Collision::InvAABBCollision(Draw& objA, Draw& objB, float DeltaTime)
 	return false;
 }
 
+void Collision::UpdateQTCollision(QuadTree& tree, std::vector<Draw>& ballObjects, Draw& singleObject, float dt)
+{
+	tree.ClearTree();
+
+	// Insert all objects into the QuadTree
+	for (Draw& obj : ballObjects) {
+		tree.Insert(&obj);
+	}
+
+	// Insert the single object into the QuadTree
+	tree.Insert(&singleObject);
+
+	// Now check for collisions using the QuadTree
+	QTCheckCollision(tree, ballObjects, singleObject, dt);
+
+}
+
 
 void Collision::CollisionCalculations(Draw &objA, Draw &objB, float DeltaTime)
 {
@@ -212,5 +229,45 @@ void Collision::CheckCollision(Draw* ball, std::vector<Draw*>& BallToCheck, int 
 	for (int i = startingIndex; i < BallToCheck.size(); ++i)
 	{
 		SphereCollison(*ball, *BallToCheck[i], dt);
+	}
+}
+
+void Collision::QTCheckCollision(QuadTree& tree, std::vector<Draw>& ballObjects, Draw& singleObject, float dt)
+{
+	std::vector<Draw*> possibleCollisions;
+
+	// Iterate through all objects in the scene (balls)
+	for (Draw& objA : ballObjects) {
+		// Retrieve potential collision candidates for objA
+		possibleCollisions.clear();
+		tree.Retrieve(possibleCollisions, &objA);
+
+		// Compare objA with all potential collisions
+		for (Draw* objB : possibleCollisions) {
+			if (&objA != objB) {
+				// Perform sphere-based collision detection
+				if (SphereCollison(objA, *objB, dt)) {
+					//std::cout << "Collision detected between objects!" << std::endl;
+
+					//add collision response
+				}
+			}
+		}
+	}
+
+	// Handle the single object (e.g., Cube0) collisions with others
+	possibleCollisions.clear();
+	tree.Retrieve(possibleCollisions, &singleObject);
+
+	// Compare the single object with all potential collisions
+	for (Draw* objB : possibleCollisions) {
+		if (&singleObject != objB) {
+			// Perform sphere-based collision detection
+			if (SphereCollison(singleObject, *objB, dt)) {
+				//std::cout << "Collision detected between single object and others!" << std::endl;
+
+				//add collision response
+			}
+		}
 	}
 }

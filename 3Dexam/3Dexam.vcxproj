@@ -137,6 +137,7 @@
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
     <ClCompile Include="Resources\ImportedCode\Construct.cpp" />
     <ClCompile Include="Resources\Shaders\EBO.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="includes\GLFW\glfw3native.h" />
     <ClInclude Include="includes\glm\mat4x3.hpp" />
     <ClInclude Include="includes\KHR\khrplatform.h" />
+    <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Resources\ImportedCode\Construct.h" />
     <ClInclude Include="Resources\Shaders\EBO.h" />

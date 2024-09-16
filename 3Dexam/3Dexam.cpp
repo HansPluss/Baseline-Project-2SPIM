@@ -11,6 +11,7 @@
 #include "Camera.h"
 #include "Collision.h"
 #include "Grid.h"
+#include "QuadTree.h"
 #include "memory"
 #include <chrono>
 // Some of the code for the spotlight is from the following repo
@@ -77,12 +78,13 @@ int main()
     int gridSizeX = 4000; 
     int gridSizeZ = 4000; 
     std::unique_ptr<Grid> m_grid = std::make_unique<Grid>(gridSizeX, gridSizeZ, cellSize);
-
+    glm::vec4 treeBounds(0, 0, gridSizeX, gridSizeZ);
+    QuadTree tree(0, treeBounds);
 
     Draw Cube0;
     Cube0.DrawSphere(glm::vec3(23, 100, 145), glm::vec3( -15, 0, 0), glm::vec3(0.45, 0.45, 0.45));
-     m_grid->AddBaLL(&Cube0); 
-
+    m_grid->AddBaLL(&Cube0); 
+    tree.Insert(&Cube0);
 
     Draw BoundingBox0;
     BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), glm::vec3(20, 1, 10));
@@ -135,9 +137,10 @@ int main()
         Draw ball;
         ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(ballPositions[i-1].y, 0, ballPositions[i-1].x), glm::vec3(0.45, 0.45, 0.45));
         balls.push_back(ball);
+        tree.Insert(&ball);
         m_grid->AddBaLL(&ball);
     }
-
+    
     Texture queball("Resources/Textures/queball.png", shaderProgram);
     glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -201,6 +204,7 @@ int main()
             glBindTexture(GL_TEXTURE_2D, textures[i].texture);
             balls[i].Render(shaderProgram, viewproj);
             collision.InvAABBCollision(BoundingBox0, balls[i], dt);
+        
         }
 
 
@@ -212,12 +216,13 @@ int main()
 
         //wall collision
         collision.InvAABBCollision(BoundingBox0, Cube0, dt);
-
+        
         //spheres collision
  
-
+        
         collision.UpdateCollision(m_grid.get(), dt); 
-
+        //collision.UpdateQTCollision(tree, balls, Cube0,dt);
+        // 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
