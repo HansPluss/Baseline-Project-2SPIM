@@ -1,4 +1,5 @@
 #include "Grid.h"
+#include "iostream"
 
 
 
@@ -64,6 +65,7 @@ void Grid::RemoveBallFromCell(Draw* ball)
 
     if (!ball->ownerCell->balls.empty())
     {
+		//std::cout << ball->cellvectorindex << std::endl;
         ball->ownerCell->balls[ball->cellvectorindex] = ball->ownerCell->balls.back();
         ball->ownerCell->balls.pop_back();
         if (ball->cellvectorindex < ball->ownerCell->balls.size())
