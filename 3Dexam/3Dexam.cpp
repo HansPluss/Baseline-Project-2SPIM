@@ -16,7 +16,7 @@
 #include <chrono>
 // Some of the code for the spotlight is from the following repo
 // https://github.com/VictorGordan/opengl-tutorials.git
-//
+// 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, Draw& cube0);
