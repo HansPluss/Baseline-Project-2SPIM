@@ -22,8 +22,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, Draw& cube0);
 
 // settings
-const unsigned int SCR_WIDTH = 1920;
-const unsigned int SCR_HEIGHT = 1080;
+const unsigned int SCR_WIDTH = 2560;
+const unsigned int SCR_HEIGHT = 1440;
 
 struct Position {
     double x;
@@ -87,9 +87,9 @@ int main()
     tree.Insert(&Cube0);
 
     Draw BoundingBox0;
-    BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), glm::vec3(52, 1, 26));
+    BoundingBox0.DrawBoundingBox(glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), glm::vec3(20, 1, 10));
     Draw TableSurface;
-    TableSurface.DrawPlane(glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), glm::vec3(50, 1, 25));
+    TableSurface.DrawPlane(glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), glm::vec3(20, 1, 10));
 
     Collision collision;
 
@@ -114,19 +114,19 @@ int main()
         }
     }
 
-    std::vector<Draw> balls2;
-    for(int i = 0; i < 20; ++i)
-    {
-        for(int j = 0; j < 50; ++j)
-        {
-            Draw ball;
-            ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(i - 10, 0, j - 25), glm::vec3(0.2, 0.2, 0.2));
-            ball.SetMass(0.5);
-            balls2.push_back(ball); 
-            m_grid->AddBaLL(&ball);
-        }
+    //std::vector<Draw> balls2;
+    //for(int i = 0; i < 20; ++i)
+    //{
+    //    for(int j = 0; j < 50; ++j)
+    //    {
+    //        Draw ball;
+    //        ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(i - 10, 0, j - 25), glm::vec3(0.2, 0.2, 0.2));
+    //        ball.SetMass(0.5);
+    //        balls2.push_back(ball); 
+    //        m_grid->AddBaLL(&ball);
+    //    }
 
-    }
+    //}
 
     std::vector<Texture> textures;
     std::vector<Draw> balls;
@@ -220,13 +220,13 @@ int main()
             collision.InvAABBCollision(BoundingBox0, balls[i], dt);
         
         }
-        for (int i = 0; i < 1000; ++i)
-        {
-            balls2[i].Update(dt, m_grid.get());
-            balls2[i].RotateCube(dt);
-            balls2[i].Render(shaderProgram, viewproj);
-            collision.InvAABBCollision(BoundingBox0, balls2[i], dt);
-        }
+        //for (int i = 0; i < 1000; ++i)
+        //{
+        //    balls2[i].Update(dt, m_grid.get());
+        //    balls2[i].RotateCube(dt);
+        //    balls2[i].Render(shaderProgram, viewproj);
+        //    collision.InvAABBCollision(BoundingBox0, balls2[i], dt);
+        //}
 
 
         // walls
