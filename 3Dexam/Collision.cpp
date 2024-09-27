@@ -271,3 +271,25 @@ void Collision::QTCheckCollision(QuadTree& tree, std::vector<Draw>& ballObjects,
 		}
 	}
 }
+
+glm::vec3 Collision::calculateBarycentricCoordinates(glm::vec3& cpoint, bool climbable, Draw& drawObject)
+{
+	glm::vec3 point = cpoint; // The point we are testing
+	float u, v, w;
+
+
+	
+	//float dot00 = glm::dot(v0v1, v0v1);
+	//float dot01 = glm::dot(v0v1, v0v2);
+	//float dot02 = glm::dot(v0v1, v0p);
+	//float dot11 = glm::dot(v0v2, v0v2);
+	//float dot12 = glm::dot(v0v2, v0p);
+
+	//// Compute barycentric coordinates
+	//float invDenom = 1.0f / (dot00 * dot11 - dot01 * dot01);
+	//u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+	//v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+	//w = 1.0f - u - v;
+
+	return glm::vec3(0.0f, 0.0f, 0.0f);
+}
