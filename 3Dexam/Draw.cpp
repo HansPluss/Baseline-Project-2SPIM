@@ -81,7 +81,7 @@ void Draw::DrawPlane(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
 
     Vertex v1{ sizeXYZ.x,  sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 0.0f };
     Vertex v2{ -sizeXYZ.x,  -sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 0.0f };
-    Vertex v3{ sizeXYZ.x,  -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 1.0f };
+    Vertex v3{ sizeXYZ.x,  sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 1.0f };
     Vertex v0{ -sizeXYZ.x,  -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 1.0f };
 
 
@@ -99,7 +99,20 @@ void Draw::DrawPlane(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
         // Top face
     0,1,2,1,2,3
     };
+    // Calculate the normal
+    glm::vec3 A = glm::vec3(v1.x, v1.y, v1.z);
+    glm::vec3 B = glm::vec3(v2.x, v2.y, v2.z);
+    glm::vec3 C = glm::vec3(v0.x, v0.y, v0.z);
 
+    // Create vectors AB and AC
+    glm::vec3 AB = B - A;
+    glm::vec3 AC = C - A;
+
+    // Calculate the normal using the cross product
+    glm::vec3 normal = glm::normalize(glm::cross(AB, AC));
+    normalvector = normal;
+    // Output normal for debugging
+    std::cout << "Normal Vector: (" << normal.x << ", " << normal.y << ", " << normal.z << ")\n";
     this->Initalize();
 }
 
@@ -311,7 +324,7 @@ void Draw::Update(float deltaTime, Grid* grid)
 {
     velocity += Acceleration * deltaTime;
     position += velocity * deltaTime;
-    Acceleration = glm::vec3(0.00f, gravity, 0.0f);
+    Acceleration = glm::vec3(0.0f, gravity, 0.0f);
 
     Cell* newCell = grid->getCell(this->position); 
     if (newCell != this->ownerCell)
@@ -386,6 +399,17 @@ void Draw::CalculateGravity(float inclineAngle, float slopeDirection)
 
     glm::vec3 directionalVector = velocity;
 
-    glm::vec3 gravitationalForce = glm::vec3(gx, gy, gz);
-    ApplyForce(gravitationalForce);
+    float normalForce = gravity * sin(inclineAngle);
+
+    glm::vec3 gravitationalForce = glm::vec3(gx, gy, 0);
+   
+    float frictionCoefficient = 0.1f; // Adjust this value for friction strength
+    glm::vec3 friction = -frictionCoefficient * normalForce * glm::normalize(velocity);
+
+    // Apply the gravitational force along the slope and friction
+    std::cout << "Incline angle: " << inclineAngle << std::endl;
+    std::cout << "Slope direction: " << slopeDirection << std::endl;
+    std::cout << "Gravity components - gx: " << gx << " gy: " << gy << " gz: " << gz << std::endl;
+    ApplyForce(gravitationalForce + friction);
+    //ApplyForce(gravitationalForce);
 }

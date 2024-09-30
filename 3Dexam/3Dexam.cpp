@@ -125,6 +125,7 @@ int main()
 
         Draw ball;
         ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(ballPositions[i-1].y, 0, ballPositions[i-1].x), glm::vec3(0.45, 0.45, 0.45));
+       
         balls.push_back(ball);
         tree.Insert(&ball);
         m_grid->AddBaLL(&ball);
@@ -201,6 +202,7 @@ int main()
             glBindTexture(GL_TEXTURE_2D, textures[i].texture);
             balls[i].Render(shaderProgram, viewproj);
             collision.InvAABBCollision(BoundingBox0, balls[i], dt);
+          
             collision.calculateBarycentricCoordinates(balls[i], TableSurface);
         
         }
@@ -244,7 +246,7 @@ void processInput(GLFWwindow* window, Draw& cube0)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
 
-        glm::vec3 force(20.0f, 0.0f, 0.0f);
+        glm::vec3 force(20.0f, -9.810f, 0.0f);
 
         cube0.ApplyForce(force);
     }
