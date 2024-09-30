@@ -375,3 +375,17 @@ glm::vec3 Draw::GetNormal()
     return normalvector;
 }
 
+void Draw::CalculateGravity(float inclineAngle, float slopeDirection)
+{
+    // Earth's gravitational constant (9.8 m/s^2)
+    float gravity = 9.81f;
+
+    float gx = gravity * sin(inclineAngle) * cos(slopeDirection); // Gravity component along x-axis
+    float gz = gravity * sin(inclineAngle) * sin(slopeDirection); // Gravity component along z-axis
+    float gy = gravity * cos(inclineAngle);                      // Gravity component along y-axis (vertical)
+
+    glm::vec3 directionalVector = velocity;
+
+    glm::vec3 gravitationalForce = glm::vec3(gx, gy, gz);
+    ApplyForce(gravitationalForce);
+}

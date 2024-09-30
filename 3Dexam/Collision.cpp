@@ -281,7 +281,7 @@ void Collision::calculateBarycentricCoordinates(Draw& ball, Draw& drawObject)
 	float groundThreshold = ball.GetSize().y;  
 	
 
-	for (int i = 0; i < drawObject.GetVertices().size(); ++i) // increment by 3 for triangle vertices
+	for (int i = 0; i < drawObject.GetVertices().size() -2; ++i) // increment by 3 for triangle vertices
 	{
 		glm::vec3 v0 = glm::vec3((drawObject.GetVertices()[i].x * drawObject.GetSize().x) + drawObject.GetPosition().x,
 			(drawObject.GetVertices()[i].y * drawObject.GetSize().y) + drawObject.GetPosition().y,
@@ -321,8 +321,16 @@ void Collision::calculateBarycentricCoordinates(Draw& ball, Draw& drawObject)
 				// The ball is at or below the ground, so correct its position
 				glm::vec3 newpos = glm::vec3(ball.GetPosition().x, height + groundThreshold, ball.GetPosition().z);
 				ball.SetPosition(newpos);
+				
+				glm::vec3 nextPosition = ball.GetPosition() + ball.GetVelocity();
+				glm::vec3 directionalVector = nextPosition - ball.GetPosition();
+				auto magnitude = glm::length(directionalVector);
 
-				 ball.SetGravity(0);
+				auto y_AxisAngle = acos(directionalVector.y / magnitude);
+				auto slopeDirection = atan2(directionalVector.z, directionalVector.x);
+				ball.CalculateGravity(y_AxisAngle, slopeDirection);
+
+				ball.ApplyForce(glm::vec3(0, (ball.GetGravity() * -1), 0));
 
 			}
 			

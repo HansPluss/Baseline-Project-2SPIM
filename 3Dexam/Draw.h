@@ -42,6 +42,7 @@ public:
 	void MoveXdir();
 	void Delete();
 	void RotateCube(float deltaTime);
+	void CalculateGravity(float inclineAngle, float slopeDirection);
 
 	//|-----------------------------------------------------------------------------|
 	//|									Getters										|
@@ -54,6 +55,7 @@ public:
 	glm::vec3 GetAngularVelocity();
 	glm::vec3 GetSize();
 	std::vector<Vertex> GetVertices() { return vertices; };
+	float GetGravity() { return gravity; };
 
 	//|-----------------------------------------------------------------------------|
 	//|									Setters										|
@@ -94,7 +96,7 @@ private:
 	glm::vec3 AngularAcceleration = glm::vec3(0, 0, 0);
 	glm::vec3 normalvector = glm::vec3(0, 0, 0);
 	float mass = 1.0f;
-	float gravity = 0;
+	float gravity = -9.81;
 
 	//|-----------------------------------------------------------------------------|
 	//|								Class initalizing								|
