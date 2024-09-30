@@ -22,8 +22,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, Draw& cube0);
 
 // settings
-const unsigned int SCR_WIDTH = 2560;
-const unsigned int SCR_HEIGHT = 1440;
+const unsigned int SCR_WIDTH = 1960;
+const unsigned int SCR_HEIGHT = 1080;
 
 struct Position {
     double x;
@@ -73,14 +73,15 @@ int main()
     Shader lightShader("light.vert", "light.frag");
     lightShader.Activate();
 
-
+    //Making Grid for better collison handeling  
     int cellSize = 8; 
-    int gridSizeX = 4000; 
-    int gridSizeZ = 4000; 
+    int gridSizeX = 1000; 
+    int gridSizeZ = 1000; 
     std::unique_ptr<Grid> m_grid = std::make_unique<Grid>(gridSizeX, gridSizeZ, cellSize);
     glm::vec4 treeBounds(0, 0, gridSizeX, gridSizeZ);
     QuadTree tree(0, treeBounds);
 
+    //Initializing objects
     Draw Cube0;
     Cube0.DrawSphere(glm::vec3(23, 100, 145), glm::vec3( -15, 0, 0), glm::vec3(0.45, 0.45, 0.45));
     m_grid->AddBaLL(&Cube0); 
@@ -94,11 +95,6 @@ int main()
     Collision collision;
 
     BoundingBox0.SetMass(10000.0f);
-
-    Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 40.0f, 0.0f));
-
-    Texture wood("Resources/Textures/wood.png", shaderProgram);
-    Texture green("Resources/Textures/green.jpg", shaderProgram);
 
     int ballNumber = 1;
     std::vector<Position> ballPositions;
@@ -114,33 +110,12 @@ int main()
         }
     }
 
-    //std::vector<Draw> balls2;
-    //for(int i = 0; i < 20; ++i)
-    //{
-    //    for(int j = 0; j < 50; ++j)
-    //    {
-    //        Draw ball;
-    //        ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(i - 10, 0, j - 25), glm::vec3(0.2, 0.2, 0.2));
-    //        ball.SetMass(0.5);
-    //        balls2.push_back(ball); 
-    //        m_grid->AddBaLL(&ball);
-    //    }
-
-    //}
-
     std::vector<Texture> textures;
     std::vector<Draw> balls;
     char basePath[] = "Resources/Textures/";
     char filetype[] = ".png";
 
     for (int i = 1; i <= 15; ++i) {
-        int j;
-        if (i % 2) {
-            j = 4;
-        }
-        else {
-            j = 1;
-        }
         std::string tempPath = std::string(basePath) + std::to_string(i) + filetype;  // Use std::string to build the file path
         char filePath[31];  // Adjust size as needed
         strcpy_s(filePath, tempPath.c_str());  // Copy std::string into C-style string (char array)
@@ -154,8 +129,16 @@ int main()
         tree.Insert(&ball);
         m_grid->AddBaLL(&ball);
     }
-    
+
+    //camera FOV & starting position
+    Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 40.0f, 0.0f));
+
+    //Initalizing textures
+    Texture wood("Resources/Textures/wood.png", shaderProgram);
+    Texture green("Resources/Textures/green.jpg", shaderProgram);
     Texture queball("Resources/Textures/queball.png", shaderProgram);
+
+    //scene light
     glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::mat4 lightModel = glm::mat4(1.0f);
@@ -218,15 +201,9 @@ int main()
             glBindTexture(GL_TEXTURE_2D, textures[i].texture);
             balls[i].Render(shaderProgram, viewproj);
             collision.InvAABBCollision(BoundingBox0, balls[i], dt);
+            collision.calculateBarycentricCoordinates(balls[i], TableSurface);
         
         }
-        //for (int i = 0; i < 1000; ++i)
-        //{
-        //    balls2[i].Update(dt, m_grid.get());
-        //    balls2[i].RotateCube(dt);
-        //    balls2[i].Render(shaderProgram, viewproj);
-        //    collision.InvAABBCollision(BoundingBox0, balls2[i], dt);
-        //}
 
 
         // walls
@@ -237,10 +214,9 @@ int main()
 
         //wall collision
         collision.InvAABBCollision(BoundingBox0, Cube0, dt);
+        collision.calculateBarycentricCoordinates(Cube0, TableSurface);
         
         //spheres collision
- 
-        
         collision.UpdateCollision(m_grid.get(), dt); 
         //collision.UpdateQTCollision(tree, balls, Cube0,dt);
         // 

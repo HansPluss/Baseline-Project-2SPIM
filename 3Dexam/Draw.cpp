@@ -74,7 +74,12 @@ void Draw::DrawPlane(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
     glm::vec3 sizeXYZ = glm::vec3(1.f, 1.f, 1.f);
 
     // face vertices
-    Vertex v1{ sizeXYZ.x,  -sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 0.0f };
+    //Vertex v1{ sizeXYZ.x,  -sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 0.0f };
+    //Vertex v2{ -sizeXYZ.x,  -sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 0.0f };
+    //Vertex v3{ sizeXYZ.x,  -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 1.0f };
+    //Vertex v0{ -sizeXYZ.x,  -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 1.0f };
+
+    Vertex v1{ sizeXYZ.x,  sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 0.0f };
     Vertex v2{ -sizeXYZ.x,  -sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 0.0f };
     Vertex v3{ sizeXYZ.x,  -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 1.0f };
     Vertex v0{ -sizeXYZ.x,  -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 1.0f };
@@ -306,7 +311,7 @@ void Draw::Update(float deltaTime, Grid* grid)
 {
     velocity += Acceleration * deltaTime;
     position += velocity * deltaTime;
-    Acceleration = glm::vec3(0.00f, 0.0f, 0.0f);
+    Acceleration = glm::vec3(0.00f, gravity, 0.0f);
 
     Cell* newCell = grid->getCell(this->position); 
     if (newCell != this->ownerCell)
@@ -318,7 +323,7 @@ void Draw::Update(float deltaTime, Grid* grid)
 
 void Draw::MoveXdir()
 {
-    position.x += speed;
+   // position.x += speed;
 }
 
 

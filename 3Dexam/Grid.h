@@ -11,17 +11,23 @@ class Grid
 public: 
 	Grid(int width, int height, int cellSize); 
 	~Grid(); 
-
+	//|-----------------------------------------------------------------------------|
+	//|								Public Functions								|
+	//|-----------------------------------------------------------------------------|
 	void AddBaLL(Draw* ball);
 	void AddBaLL(Draw* ball, Cell* cell);
+	void RemoveBallFromCell(Draw* ball);
+	//|-----------------------------------------------------------------------------|
+	//|								Getters											|
+	//|-----------------------------------------------------------------------------|
 
 	Cell* getCell(int x, int y);
 	Cell* getCell(const glm::vec3& pos);
 
-
-	void RemoveBallFromCell(Draw* ball); 
-
 private: 
+	//|-----------------------------------------------------------------------------|
+	//|								Private variables								|
+	//|-----------------------------------------------------------------------------|
 	std::vector<Cell> m_cells; 
 	int m_cellSize;
 	int m_width;

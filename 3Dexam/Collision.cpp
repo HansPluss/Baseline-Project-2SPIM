@@ -1,7 +1,7 @@
 #include "Collision.h"
 #include "Draw.h"
-#include <glm/glm.hpp>
 #include "glm/mat4x3.hpp"
+#include <glm/glm.hpp>
 #include "iostream"
 #include <glm/gtc/type_ptr.hpp>
 #include "Grid.h"
@@ -272,24 +272,63 @@ void Collision::QTCheckCollision(QuadTree& tree, std::vector<Draw>& ballObjects,
 	}
 }
 
-glm::vec3 Collision::calculateBarycentricCoordinates(glm::vec3& cpoint, bool climbable, Draw& drawObject)
+void Collision::calculateBarycentricCoordinates(Draw& ball, Draw& drawObject)
 {
-	glm::vec3 point = cpoint; // The point we are testing
 	float u, v, w;
+	glm::vec3 point = ball.GetPosition();
 
-
+	// how close the object should be before it starts being affecting the ground
+	float groundThreshold = ball.GetSize().y;  
 	
-	//float dot00 = glm::dot(v0v1, v0v1);
-	//float dot01 = glm::dot(v0v1, v0v2);
-	//float dot02 = glm::dot(v0v1, v0p);
-	//float dot11 = glm::dot(v0v2, v0v2);
-	//float dot12 = glm::dot(v0v2, v0p);
 
-	//// Compute barycentric coordinates
-	//float invDenom = 1.0f / (dot00 * dot11 - dot01 * dot01);
-	//u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-	//v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-	//w = 1.0f - u - v;
+	for (int i = 0; i < drawObject.GetVertices().size(); ++i) // increment by 3 for triangle vertices
+	{
+		glm::vec3 v0 = glm::vec3((drawObject.GetVertices()[i].x * drawObject.GetSize().x) + drawObject.GetPosition().x,
+			(drawObject.GetVertices()[i].y * drawObject.GetSize().y) + drawObject.GetPosition().y,
+			(drawObject.GetVertices()[i].z * drawObject.GetSize().z) + drawObject.GetPosition().z);
 
-	return glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 v1 = glm::vec3((drawObject.GetVertices()[i + 1].x * drawObject.GetSize().x) + drawObject.GetPosition().x,
+			(drawObject.GetVertices()[i + 1].y * drawObject.GetSize().y) + drawObject.GetPosition().y,
+			(drawObject.GetVertices()[i + 1].z * drawObject.GetSize().z) + drawObject.GetPosition().z);
+
+		glm::vec3 v2 = glm::vec3((drawObject.GetVertices()[i + 2].x * drawObject.GetSize().x) + drawObject.GetPosition().x,
+			(drawObject.GetVertices()[i + 2].y * drawObject.GetSize().y) + drawObject.GetPosition().y,
+			(drawObject.GetVertices()[i + 2].z * drawObject.GetSize().z) + drawObject.GetPosition().z);
+
+		glm::vec3 v0v1 = v1 - v0;
+		glm::vec3 v0v2 = v2 - v0;
+		glm::vec3 v0p = point - v0;
+
+		// Compute dot products
+		float dot00 = glm::dot(v0v1, v0v1); // v0v1^2
+		float dot01 = glm::dot(v0v1, v0v2);
+		float dot02 = glm::dot(v0v1, v0p);
+		float dot11 = glm::dot(v0v2, v0v2); // v0v2^2
+		float dot12 = glm::dot(v0v2, v0p);
+
+		// Compute barycentric coordinates
+		float invDenom = 1 / (dot00 * dot11 - dot01 * dot01); // inverse denominator
+		v = (dot11 * dot02 - dot01 * dot12) * invDenom;
+		w = (dot00 * dot12 - dot01 * dot02) * invDenom;
+		u = 1 - w - v;
+		float height = v0.y * u + v1.y * v + v2.y * w; // interpolate height using barycentric coordinates
+		// Only if the point is inside the triangle (u, v, w > 0)
+		if (u >= 0 && v >= 0 && w >= 0) {
+
+			// Check if the ball is sufficiently close to the ground
+			if (ball.GetPosition().y < height + groundThreshold) {
+
+				// The ball is at or below the ground, so correct its position
+				glm::vec3 newpos = glm::vec3(ball.GetPosition().x, height + groundThreshold, ball.GetPosition().z);
+				ball.SetPosition(newpos);
+
+				 ball.SetGravity(0);
+
+			}
+			
+		}
+		if (!ball.GetPosition().y < height + groundThreshold)
+		ball.SetGravity(-3.81);
+	}
 }
+
