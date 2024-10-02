@@ -206,7 +206,7 @@ void Collision::BallCollisionResponse(Draw& objA, Draw& objB)
 
 
 	// Calculate the new velocities along the normal direction
-	float restitution = 1.00f; // Coefficient of restitution (1 = perfectly elastic collision)
+	float restitution = 0.8f; // Coefficient of restitution (1 = perfectly elastic collision)
 	float impulse = (-(1 + restitution) * velocityAlongNormal) / (1 / massA + 1 / massB);
 
 	glm::vec3 impulseVector = impulse * normal;
@@ -320,9 +320,12 @@ void Collision::calculateBarycentricCoordinates(Draw& ball, Draw& drawObject)
 
 				// Assuming you have a way to calculate the normal from your plane vertices.
 				glm::vec3 normal = drawObject.GetNormal(); // Use the plane's vertex definitions
-				float inclineAngle = std::acos(normal.y); // Angle relative to the vertical
-				float slopeDirection = atan2(normal.z, normal.x); // Horizontal angle on x-z plane
+
+				// Gravity and angle calculations
 				float gravity = 9.81f;
+				float inclineAngle = std::acos(normal.y); // Angle of the incline relative to the vertical (y-axis)
+				float slopeDirection = atan2(normal.z, normal.x); // Horizontal angle on x-z plane
+
 				// Ball Position Update
 				glm::vec3 newpos = glm::vec3(ball.GetPosition().x, height + groundThreshold, ball.GetPosition().z);
 				ball.SetPosition(newpos);
@@ -334,30 +337,30 @@ void Collision::calculateBarycentricCoordinates(Draw& ball, Draw& drawObject)
 				// Handle the edge case when the directional vector has zero length
 				auto magnitude = glm::length(directionalVector);
 				if (magnitude > 0.0001f) {
-					// Calculate slope angle (y_AxisAngle) and slope direction (slopeDirection)
+					// Calculate slope angle and slope direction
 					float y_AxisAngle = atan2(directionalVector.y, glm::length(glm::vec2(directionalVector.x, directionalVector.z))); // Angle of incline
-					float normalForce = gravity * sin(inclineAngle);
+
+					// Calculate the gravitational forces along the slope (x and z axes)
+					float gx = gravity * normal.x; // Gravity projection on x-axis based on the plane's normal
+					float gz = gravity * normal.z; // Gravity projection on z-axis based on the plane's normal
+					float gy = -gravity * normal.y; // Gravitational force pulling down the slope (along y)
+
+					// Create the total gravity force vector
+					glm::vec3 gravityForce = glm::vec3(gravity * sin(y_AxisAngle), gy, -gz);
+
+					// Calculate friction (opposes velocity direction)
 					float frictionCoefficient = 0.9f; // Adjust this value for friction strength
-					glm::vec3 friction = -frictionCoefficient * normalForce * glm::normalize(ball.GetVelocity());
-					// Here you can use the normal to adjust your gravity calculations
-					//ball.CalculateGravity(inclineAngle, slopeDirection);
+					glm::vec3 friction = -frictionCoefficient * glm::normalize(ball.GetVelocity());
 
-					// Calculate the force of gravity acting on the ball
-					glm::vec3 gravityForce = glm::vec3(gravity * sin(y_AxisAngle), -ball.GetGravity(), gravity * cos(y_AxisAngle));
-
-					// Project the gravitational force along the slope
-					glm::vec3 slopeGravity = glm::vec3(gravityForce.x, gravityForce.y, gravityForce.z) * glm::vec3(normal.x, 0, normal.z);
-
-					// Apply the slope-adjusted gravitational force
-					ball.ApplyForce(slopeGravity + friction);
+					// Apply gravity along the slope and friction
+					ball.ApplyForce(gravityForce + friction);
 				}
+
 
 				
 			}
 			
 		}
-		if (ball.GetPosition().y >= height + groundThreshold)
-			ball.SetGravity(-9.81);
 	}
 }
 
