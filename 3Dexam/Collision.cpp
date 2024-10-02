@@ -360,6 +360,11 @@ void Collision::calculateBarycentricCoordinates(Draw& ball, Draw& drawObject)
 				
 			}
 			
+<<<<<<< Updated upstream
+=======
+
+			return;
+>>>>>>> Stashed changes
 		}
 	}
 }

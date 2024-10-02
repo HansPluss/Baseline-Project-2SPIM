@@ -80,7 +80,7 @@ void Draw::DrawPlane(glm::vec3 Color, glm::vec3 pos, glm::vec3 size)
     //Vertex v0{ -sizeXYZ.x,  -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 1.0f };
 
     Vertex v1{ sizeXYZ.x,  -sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 0.0f };
-    Vertex v2{ -sizeXYZ.x,  -sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 0.0f };
+    Vertex v2{ -sizeXYZ.x,  sizeXYZ.y,  sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 0.0f };
     Vertex v3{ sizeXYZ.x,  -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 1.0f, 1.0f };
     Vertex v0{ -sizeXYZ.x,  -sizeXYZ.y, -sizeXYZ.z , Color.x, Color.y, Color.z, 0.0f, 1.0f };
 
@@ -392,15 +392,44 @@ void Draw::CalculateGravity(float inclineAngle, float slopeDirection)
 {
     // Earth's gravitational constant (9.8 m/s^2)
     float gravity = 9.81f;
+<<<<<<< Updated upstream
 
     float gx = gravity * sin(inclineAngle) * cos(slopeDirection); // Gravity component along x-axis
     float gz = gravity * sin(inclineAngle) * sin(slopeDirection); // Gravity component along z-axis
     float gy = gravity * cos(inclineAngle);                      // Gravity component along y-axis (vertical)
 
     glm::vec3 directionalVector = velocity;
+=======
+    glm::vec3 gravityForce(0.0f, -gravity, 0.0f);
+
+    // Calculate normal force (perpendicular to the slope)
+    float normalForceMagnitude = glm::dot(gravityForce, normal); // Gravity along the normal
+    glm::vec3 normalForce = normal * normalForceMagnitude;
+    if (glm::length(slopeVector) > 0.0001f) {
+        slopeVector = glm::normalize(slopeVector);
+    }
+    else {
+        std::cout << "slopeVector is a zero vector, can't normalize!" << std::endl;
+        return;
+    }
+    float frictionCoefficient = 0.0f; // or whatever value you're using
+    glm::vec3 friction = -frictionCoefficient * normalForce * glm::normalize(GetVelocity());
+    std::cout << "Friction: " << glm::length(friction) << std::endl; // Check the friction value
+    glm::vec3 velocity = GetVelocity();
+    if (glm::length(velocity) > 0.0001f) {
+        glm::vec3 friction = -frictionCoefficient * normalForce * glm::normalize(velocity);
+    }
+    else {
+        std::cout << "Velocity is zero, friction can't be applied." << std::endl;
+        friction = glm::vec3(0.0f);
+    }
+    // Downward gravity force
+    
+>>>>>>> Stashed changes
 
     float normalForce = gravity * sin(inclineAngle);
 
+<<<<<<< Updated upstream
     glm::vec3 gravitationalForce = glm::vec3(gx, gy, 0);
    
     float frictionCoefficient = 0.1f; // Adjust this value for friction strength
@@ -412,4 +441,19 @@ void Draw::CalculateGravity(float inclineAngle, float slopeDirection)
     std::cout << "Gravity components - gx: " << gx << " gy: " << gy << " gz: " << gz << std::endl;
     ApplyForce(gravitationalForce + friction);
     //ApplyForce(gravitationalForce);
+=======
+    // Project this parallel gravity onto the slope's horizontal direction (slopeVector)
+    glm::vec3 gravityAlongSlope = glm::dot(gravityParallel, slopeVector) * slopeVector;
+    
+
+
+    // Apply the force along the slope
+    ApplyForce(gravityAlongSlope + friction);
+    
+    
+   /* std::printf("GravitiySlope " , gravityAlongSlope);
+   
+    */
+
+>>>>>>> Stashed changes
 }
