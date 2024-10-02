@@ -42,7 +42,7 @@ public:
 	void MoveXdir();
 	void Delete();
 	void RotateCube(float deltaTime);
-	void CalculateGravity(float inclineAngle, float slopeDirection);
+	void CalculateGravity(float inclineAngle, glm::vec3 slopeVector, glm::vec3 normal);
 
 	//|-----------------------------------------------------------------------------|
 	//|									Getters										|

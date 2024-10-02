@@ -316,55 +316,69 @@ void Collision::calculateBarycentricCoordinates(Draw& ball, Draw& drawObject)
 		if (u >= 0 && v >= 0 && w >= 0) {
 
 			// Check if the ball is sufficiently close to the ground
-			if (ball.GetPosition().y < height + groundThreshold) {
+			if (ball.GetPosition().y < height + groundThreshold)
+			{
+				glm::vec3 currentVelocity = ball.GetVelocity();
 
-				// Assuming you have a way to calculate the normal from your plane vertices.
-				glm::vec3 normal = drawObject.GetNormal(); // Use the plane's vertex definitions
-
-				// Gravity and angle calculations
-				float gravity = 9.81f;
-				float inclineAngle = std::acos(normal.y); // Angle of the incline relative to the vertical (y-axis)
-				float slopeDirection = atan2(normal.z, normal.x); // Horizontal angle on x-z plane
-
-				// Ball Position Update
-				glm::vec3 newpos = glm::vec3(ball.GetPosition().x, height + groundThreshold, ball.GetPosition().z);
-				ball.SetPosition(newpos);
-
-				// Calculate the next position based on the velocity
-				glm::vec3 nextPosition = ball.GetPosition() + ball.GetVelocity();
-				glm::vec3 directionalVector = ball.GetVelocity();
-
-				// Handle the edge case when the directional vector has zero length
-				auto magnitude = glm::length(directionalVector);
-				if (magnitude > 0.0001f) {
-					// Calculate slope angle and slope direction
-					float y_AxisAngle = atan2(directionalVector.y, glm::length(glm::vec2(directionalVector.x, directionalVector.z))); // Angle of incline
-
-					// Calculate the gravitational forces along the slope (x and z axes)
-					float gx = gravity * normal.x; // Gravity projection on x-axis based on the plane's normal
-					float gz = gravity * normal.z; // Gravity projection on z-axis based on the plane's normal
-					float gy = -gravity * normal.y; // Gravitational force pulling down the slope (along y)
-
-					// Create the total gravity force vector
-					glm::vec3 gravityForce = glm::vec3(gravity * sin(y_AxisAngle), gy, -gz);
-
-					// Calculate friction (opposes velocity direction)
-					float frictionCoefficient = 0.9f; // Adjust this value for friction strength
-					glm::vec3 friction = -frictionCoefficient * glm::normalize(ball.GetVelocity());
-
-					// Apply gravity along the slope and friction
-					ball.ApplyForce(gravityForce + friction);
+				// Stop downward motion
+				if (currentVelocity.y < 0)
+				{
+					currentVelocity.y = 0;  // Reset downward velocity
 				}
 
+				// Apply counteracting force to simulate gravity
+				ball.ApplyForce(glm::vec3(0, 9.81f, 0)); // Counter gravity
+				ball.SetVelocity(currentVelocity);
 
-				
+				// Handle additional ground proximity force in case of collision
+				if (ball.GetPosition().y < height + groundThreshold - 0.1)
+				{
+					ball.ApplyForce(glm::vec3(0, 9.86f, 0)); // Apply small upward force
+				}
+
+				// Calculate the normal vector for the slope
+				glm::vec3 normal = glm::normalize(glm::cross(v1 - v0, v2 - v0)); // Normal for this triangle
+				float inclineAngle = std::acos(normal.y);
+				float slopeDirection = atan2(normal.z, normal.x);
+				glm::vec3 Dirvec = ball.GetVelocity();
+				std::cout << ball.GetVelocity().y << std::endl;
+				glm::vec3 slopeVector = glm::normalize(glm::vec3(normal.x, 0, normal.z)); // Horizontal direction of the slope
+
+				// Determine if the ball is moving uphill or downhill based on the velocity and the normal
+				if (currentVelocity.y > 0) // Ball is moving upward
+				{
+					// Adjust velocity based on slope incline (modify the y component)
+					float speedAdjustment = glm::dot(currentVelocity, slopeVector);
+					currentVelocity.y -= speedAdjustment * sin(inclineAngle); // Reduce upward velocity based on incline
+
+					// Ensure the ball doesn't penetrate the ground
+					if (ball.GetPosition().y < height + groundThreshold)
+					{
+						ball.SetPosition(glm::vec3(ball.GetPosition().x, height + groundThreshold, ball.GetPosition().z));
+						currentVelocity.y = 0; // Stop upward motion to prevent it from moving through the ground
+					}
+				}
+				else if (currentVelocity.y < 0) // Ball is moving downward
+				{
+					// Adjust downward velocity based on slope incline
+					float speedAdjustment = glm::dot(currentVelocity, slopeVector);
+					currentVelocity.y += speedAdjustment * sin(inclineAngle); // Increase downward speed based on incline
+
+					// Ensure the ball doesn't penetrate the ground
+					if (ball.GetPosition().y < height + groundThreshold)
+					{
+						ball.SetPosition(glm::vec3(ball.GetPosition().x, height + groundThreshold, ball.GetPosition().z));
+						currentVelocity.y = 0; // Stop downward motion to prevent it from moving through the ground
+					}
+				}
+
+				ball.SetVelocity(currentVelocity);
+
+				//calculates the gravity one the slope
+				ball.CalculateGravity(inclineAngle, slopeVector, normal);
 			}
-			
-<<<<<<< Updated upstream
-=======
 
 			return;
->>>>>>> Stashed changes
 		}
 	}
 }
