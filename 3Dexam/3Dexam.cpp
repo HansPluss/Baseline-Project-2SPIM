@@ -83,7 +83,7 @@ int main()
 
     //Initializing objects
     Draw Cube0;
-    Cube0.DrawSphere(glm::vec3(23, 100, 145), glm::vec3( -15, 0, 0), glm::vec3(0.45, 0.45, 0.45));
+    Cube0.DrawSphere(glm::vec3(23, 100, 145), glm::vec3( -15, 10, 0), glm::vec3(0.45, 0.45, 0.45));
     m_grid->AddBaLL(&Cube0); 
     tree.Insert(&Cube0);
 
@@ -124,7 +124,7 @@ int main()
         textures.push_back(tt);
 
         Draw ball;
-        ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(ballPositions[i-1].y, 0, ballPositions[i-1].x), glm::vec3(0.45, 0.45, 0.45));
+        ball.DrawSphere(glm::vec3(23, 100, 145), glm::vec3(ballPositions[i-1].y, 10, ballPositions[i-1].x), glm::vec3(0.45, 0.45, 0.45));
        
         balls.push_back(ball);
         tree.Insert(&ball);
@@ -246,7 +246,7 @@ void processInput(GLFWwindow* window, Draw& cube0)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
 
-        glm::vec3 force(20.0f, -9.810f, 0.0f);
+        glm::vec3 force(20.0f, 0, 0.0f);
 
         cube0.ApplyForce(force);
     }

@@ -388,28 +388,26 @@ glm::vec3 Draw::GetNormal()
     return normalvector;
 }
 
-void Draw::CalculateGravity(float inclineAngle, float slopeDirection)
-{
-    // Earth's gravitational constant (9.8 m/s^2)
+void Draw::CalculateGravity(float inclineAngle, glm::vec3 slopeVector, glm::vec3 normal) {
     float gravity = 9.81f;
 
-    float gx = gravity * sin(inclineAngle) * cos(slopeDirection); // Gravity component along x-axis
-    float gz = gravity * sin(inclineAngle) * sin(slopeDirection); // Gravity component along z-axis
-    float gy = gravity * cos(inclineAngle);                      // Gravity component along y-axis (vertical)
+    // Downward gravity force
+    glm::vec3 gravityForce(0.0f, -gravity, 0.0f);
 
-    glm::vec3 directionalVector = velocity;
+    // Calculate normal force (perpendicular to the slope)
+    float normalForceMagnitude = glm::dot(gravityForce, normal); // Gravity along the normal
+    glm::vec3 normalForce = normal * normalForceMagnitude;
 
-    float normalForce = gravity * sin(inclineAngle);
+    // Calculate gravitational force acting parallel to the slope (slope vector)
+    glm::vec3 gravityParallel = gravityForce - normalForce; // Parallel force along the slope
 
-    glm::vec3 gravitationalForce = glm::vec3(gx, gy, 0);
-   
-    float frictionCoefficient = 0.1f; // Adjust this value for friction strength
-    glm::vec3 friction = -frictionCoefficient * normalForce * glm::normalize(velocity);
+    // Project this parallel gravity onto the slope's horizontal direction (slopeVector)
+    glm::vec3 gravityAlongSlope = glm::dot(gravityParallel, slopeVector) * slopeVector;
 
-    // Apply the gravitational force along the slope and friction
-    std::cout << "Incline angle: " << inclineAngle << std::endl;
-    std::cout << "Slope direction: " << slopeDirection << std::endl;
-    std::cout << "Gravity components - gx: " << gx << " gy: " << gy << " gz: " << gz << std::endl;
-    ApplyForce(gravitationalForce + friction);
-    //ApplyForce(gravitationalForce);
+    // Apply the force along the slope
+    ApplyForce(gravityAlongSlope);
 }
+
+
+
+
